@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160213205855) do
+ActiveRecord::Schema.define(version: 20160213210937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,14 @@ ActiveRecord::Schema.define(version: 20160213205855) do
     t.jsonb    "metadata"
   end
 
+  create_table "participant_studies", force: :cascade do |t|
+    t.integer "participant_id"
+    t.integer "study_id"
+  end
+
+  add_index "participant_studies", ["participant_id"], name: "index_participant_studies_on_participant_id", using: :btree
+  add_index "participant_studies", ["study_id"], name: "index_participant_studies_on_study_id", using: :btree
+
   create_table "participants", force: :cascade do |t|
     t.string   "identifier"
     t.datetime "created_at", null: false
@@ -128,4 +136,6 @@ ActiveRecord::Schema.define(version: 20160213205855) do
   add_foreign_key "datasources", "m_cerebrum_platforms"
   add_foreign_key "datastreams", "datasources"
   add_foreign_key "datastreams", "participants"
+  add_foreign_key "participant_studies", "participants"
+  add_foreign_key "participant_studies", "studies"
 end
