@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Identifier:</strong>
+  <%= @datasource.identifier %>
+</p>
+
+<p>
+  <strong>Datasourcetype:</strong>
+  <%= @datasource.datasourcetype %>
+</p>
+
+<p>
+  <strong>Datadescriptor:</strong>
+  <%= @datasource.datadescriptor %>
+</p>
+
+<p>
+  <strong>Metadata:</strong>
+  <%= @datasource.metadata %>
+</p>
+
+<%= link_to 'Edit', edit_datasource_path(@datasource) %> |
+<%= link_to 'Back', datasources_path %>

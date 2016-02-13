@@ -1,0 +1,25 @@
+<%= form_for(@m_cerebrum_platform_app) do |f| %>
+  <% if @m_cerebrum_platform_app.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@m_cerebrum_platform_app.errors.count, "error") %> prohibited this m_cerebrum_platform_app from being saved:</h2>
+
+      <ul>
+      <% @m_cerebrum_platform_app.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :platformapptype %><br>
+    <%= f.text_field :platformapptype %>
+  </div>
+  <div class="field">
+    <%= f.label :identifier %><br>
+    <%= f.text_field :identifier %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

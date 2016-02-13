@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  platformtype: MyString
+  identifier: MyString
+
+two:
+  platformtype: MyString
+  identifier: MyString

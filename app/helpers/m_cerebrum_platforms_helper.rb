@@ -1,0 +1,2 @@
+module MCerebrumPlatformsHelper
+end
