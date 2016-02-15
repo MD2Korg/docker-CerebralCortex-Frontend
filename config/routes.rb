@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'participants/show'
+
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   resources :m_cerebrum_applications

@@ -1,5 +1,13 @@
 class MCerebrumPlatformsController < InheritedResources::Base
 
+  def index
+    @mcerebrumPlatform = MCerebrumPlatform.all
+  end
+
+  def show
+    @mcerebrumPlatform = MCerebrumPlatform.find(params[:id])
+  end
+
   private
 
     def m_cerebrum_platform_params

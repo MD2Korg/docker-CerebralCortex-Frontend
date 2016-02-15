@@ -1,0 +1,1 @@
+json.extract! @datapoint, :created_at, :updated_at, :datastream_id, :timestamp, :sample

@@ -1,0 +1,1 @@
+json.extract! @participant, :identifier, :created_at, :updated_at
