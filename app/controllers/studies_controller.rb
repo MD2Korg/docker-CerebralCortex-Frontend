@@ -9,7 +9,7 @@ class StudiesController < InheritedResources::Base
   end
 
   def create
-    @study = Study.new(study_params)
+    @study = Study.where(identifier: study_params['identifier']).first_or_create(study_params)
 
     respond_to do |format|
       if @study.save

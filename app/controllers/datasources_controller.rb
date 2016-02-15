@@ -10,7 +10,12 @@ class DatasourcesController < InheritedResources::Base
 
 
   def create
-    @datasource = Datasource.new(datasource_params)
+    @datasource = Datasource.where(identifier: datasource_params['identifier'],
+                                   datasourcetype: datasource_params['datasourcetype'],
+                                   m_cerebrum_application_id: datasource_params['m_cerebrum_application_id'],
+                                   m_cerebrum_platform_id: datasource_params['m_cerebrum_platform_id'],
+                                   m_cerebrum_platform_app_id: datasource_params['m_cerebrum_platform_app_id']
+    ).first_or_create(datasource_params)
 
     respond_to do |format|
       if @datasource.save

@@ -10,7 +10,7 @@ class DatastreamsController < InheritedResources::Base
   end
 
   def create
-    @datastream = Datastream.new(datastream_params)
+    @datastream = Datastream.where(datasource_id: datastream_params['datasource_id'], participant_id: datastream_params['participant_id']).first_or_create(datastream_params)
 
     respond_to do |format|
       if @datastream.save

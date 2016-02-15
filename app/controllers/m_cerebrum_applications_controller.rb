@@ -9,7 +9,7 @@ class MCerebrumApplicationsController < InheritedResources::Base
   end
 
   def create
-    @mcapp = MCerebrumApplication.new(m_cerebrum_application_params)
+    @mcapp = MCerebrumApplication.where(identifier: m_cerebrum_application_params['identifier'], applicationtype: m_cerebrum_application_params['applicationtype']).first_or_create(m_cerebrum_application_params)
 
     respond_to do |format|
       if @mcapp.save

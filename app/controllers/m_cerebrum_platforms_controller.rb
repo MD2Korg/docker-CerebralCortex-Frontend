@@ -9,7 +9,7 @@ class MCerebrumPlatformsController < InheritedResources::Base
   end
 
   def create
-    @mcplatform = MCerebrumPlatform.new(m_cerebrum_platform_params)
+    @mcplatform = MCerebrumPlatform.where(identifier: m_cerebrum_platform_params['identifier'], platformtype: m_cerebrum_platform_params['platformtype']).first_or_create(m_cerebrum_platform_params)
 
     respond_to do |format|
       if @mcplatform.save
