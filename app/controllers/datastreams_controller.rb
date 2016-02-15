@@ -9,11 +9,20 @@ class DatastreamsController < InheritedResources::Base
     @datastream = Datastream.find(params[:id])
   end
 
+  def create
+    @datastream = Datastream.new(datastream_params)
+
+    respond_to do |format|
+      if @datastream.save
+        format.json { render json: @datastream }
+      end
+    end
+  end
 
   private
 
     def datastream_params
-      params.require(:datastream).permit()
+      params.require(:datastream).permit(:datasource_id, :participant_id)
     end
 end
 

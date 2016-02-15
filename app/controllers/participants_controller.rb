@@ -8,6 +8,16 @@ class ParticipantsController < InheritedResources::Base
     @participant = Participant.find(params[:id])
   end
 
+  def create
+    @participant = Participant.new(participant_params)
+
+    respond_to do |format|
+      if @participant.save
+        format.json { render json: @participant }
+      end
+    end
+  end
+
   private
 
     def participant_params

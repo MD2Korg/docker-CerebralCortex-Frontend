@@ -8,10 +8,22 @@ class MCerebrumPlatformAppsController < InheritedResources::Base
     @mcerebrumPlatformApp = MCerebrumPlatformApp.find(params[:id])
   end
 
+  def create
+    @mcplatformapp = MCerebrumPlatformApp.new(m_cerebrum_platform_app_params)
+
+    respond_to do |format|
+      if @mcplatformapp.save
+        format.json { render json: @mcplatformapp }
+      end
+    end
+  end
+
   private
 
     def m_cerebrum_platform_app_params
-      params.require(:m_cerebrum_platform_app).permit(:platformapptype, :identifier)
+      #TWH Removed for JSON API
+      #params.require(:m_cerebrum_platform_app).permit(:platformapptype, :identifier)
+      params.require(:m_cerebrum_platform_app).permit!
     end
 end
 

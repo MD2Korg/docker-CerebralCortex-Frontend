@@ -1,4 +1,4 @@
 json.array!(@mcerebrumPlatformApp) do |mca|
-  json.extract! mca, :created_at, :updated_at, :identifier, :platformapptype, :metadata
+  json.extract! mca, :id, :created_at, :updated_at, :identifier, :platformapptype, :metadata
 end
 

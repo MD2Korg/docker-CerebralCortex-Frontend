@@ -8,10 +8,22 @@ class MCerebrumPlatformsController < InheritedResources::Base
     @mcerebrumPlatform = MCerebrumPlatform.find(params[:id])
   end
 
+  def create
+    @mcplatform = MCerebrumPlatform.new(m_cerebrum_platform_params)
+
+    respond_to do |format|
+      if @mcplatform.save
+        format.json { render json: @mcplatform }
+      end
+    end
+  end
+
   private
 
     def m_cerebrum_platform_params
-      params.require(:m_cerebrum_platform).permit(:platformtype, :identifier)
+      #TWH Removed for JSON API
+      # params.require(:m_cerebrum_platform).permit(:platformtype, :identifier, :metadata)
+      params.require(:m_cerebrum_platform).permit!
     end
 end
 
