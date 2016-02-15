@@ -1,4 +1,4 @@
-json.array!(@datapoints) do |datapoint|
-  json.extract! datapoint, :id, :timestamp
-  json.url datapoint_url(datapoint, format: :json)
+json.array!(@datapoint) do |ds|
+  json.extract! ds, :id, :created_at, :updated_at, :datastream_id, :timestamp, :sample
 end
+

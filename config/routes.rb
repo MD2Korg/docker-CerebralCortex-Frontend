@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  get 'participants/show'
+
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
+  resources :m_cerebrum_applications
   resources :datasources
   resources :datapoints
   resources :datastreams
@@ -6,9 +11,7 @@ Rails.application.routes.draw do
   resources :participants
   resources :m_cerebrum_platform_apps
   resources :m_cerebrum_platforms
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
-  resources :m_cerebrum_applications
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

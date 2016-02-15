@@ -24,8 +24,13 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'activeadmin', '~> 1.0.0.pre2'
+gem 'activeadmin_addons'
 gem 'devise'
 gem 'cancan'
+
+gem 'rspec'
+
+require 'multi_json'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

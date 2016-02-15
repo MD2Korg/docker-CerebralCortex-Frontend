@@ -1,4 +1,4 @@
-json.array!(@datasources) do |datasource|
-  json.extract! datasource, :id, :identifier, :datasourcetype, :datadescriptor, :metadata
-  json.url datasource_url(datasource, format: :json)
+json.array!(@datasource) do |ds|
+  json.extract! ds, :id, :created_at, :updated_at, :identifier, :datasourcetype, :datadescriptor, :metadata, :m_cerebrum_application_id, :m_cerebrum_platform_id, :m_cerebrum_platform_app_id
 end
+

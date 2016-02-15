@@ -13,5 +13,16 @@ ActiveAdmin.register Study do
 #   permitted
 # end
 
+  permit_params :identifier,
+                :name
+
+  form do |f|
+    f.semantic_errors
+    f.inputs do
+      f.input :identifier
+      f.input :name
+    end
+    f.actions
+  end
 
 end

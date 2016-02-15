@@ -1,4 +1,4 @@
-json.array!(@participants) do |participant|
-  json.extract! participant, :id, :identifier
-  json.url participant_url(participant, format: :json)
+json.array!(@participant) do |participant|
+  json.extract! participant, :id, :identifier, :created_at, :updated_at
 end
+

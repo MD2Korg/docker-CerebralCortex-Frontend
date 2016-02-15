@@ -13,5 +13,19 @@ ActiveAdmin.register MCerebrumApplication do
 #   permitted
 # end
 
+  belongs_to :datasource
+  navigation_menu :datasource
+
+  permit_params :identifier, :applicationtype, :metadata
+
+  form do |f|
+    f.inputs do
+      f.input :identifier
+      f.input :applicationtype
+      f.input :metadata, as: :text
+    end
+    f.actions
+  end
+
 
 end

@@ -13,5 +13,14 @@ ActiveAdmin.register Participant do
 #   permitted
 # end
 
+  permit_params :identifier
+
+  form do |f|
+    f.semantic_errors
+    f.inputs do
+      f.input :identifier
+    end
+    f.actions
+  end
 
 end

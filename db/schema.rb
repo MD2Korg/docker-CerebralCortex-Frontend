@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160213042930) do
+ActiveRecord::Schema.define(version: 20160214210937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,29 +51,46 @@ ActiveRecord::Schema.define(version: 20160213042930) do
 
   create_table "datapoints", force: :cascade do |t|
     t.datetime "timestamp"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "datastream_id"
+    t.jsonb    "sample"
   end
+
+  add_index "datapoints", ["datastream_id"], name: "index_datapoints_on_datastream_id", using: :btree
 
   create_table "datasources", force: :cascade do |t|
     t.string   "identifier"
     t.string   "datasourcetype"
     t.jsonb    "datadescriptor"
     t.jsonb    "metadata"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "m_cerebrum_application_id"
+    t.integer  "m_cerebrum_platform_id"
+    t.integer  "m_cerebrum_platform_app_id"
   end
+
+  add_index "datasources", ["m_cerebrum_application_id"], name: "index_datasources_on_m_cerebrum_application_id", using: :btree
+  add_index "datasources", ["m_cerebrum_platform_app_id"], name: "index_datasources_on_m_cerebrum_platform_app_id", using: :btree
+  add_index "datasources", ["m_cerebrum_platform_id"], name: "index_datasources_on_m_cerebrum_platform_id", using: :btree
 
   create_table "datastreams", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.integer  "datasource_id"
+    t.integer  "participant_id"
   end
 
+  add_index "datastreams", ["datasource_id"], name: "index_datastreams_on_datasource_id", using: :btree
+  add_index "datastreams", ["participant_id"], name: "index_datastreams_on_participant_id", using: :btree
+
   create_table "m_cerebrum_applications", force: :cascade do |t|
-    t.string   "apptype"
+    t.string "applicationtype"
     t.string   "identifier"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb    "metadata"
   end
 
   create_table "m_cerebrum_platform_apps", force: :cascade do |t|
@@ -81,6 +98,7 @@ ActiveRecord::Schema.define(version: 20160213042930) do
     t.string   "identifier"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.jsonb    "metadata"
   end
 
   create_table "m_cerebrum_platforms", force: :cascade do |t|
@@ -88,7 +106,16 @@ ActiveRecord::Schema.define(version: 20160213042930) do
     t.string   "identifier"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.jsonb    "metadata"
   end
+
+  create_table "participant_studies", force: :cascade do |t|
+    t.integer "participant_id"
+    t.integer "study_id"
+  end
+
+  add_index "participant_studies", ["participant_id"], name: "index_participant_studies_on_participant_id", using: :btree
+  add_index "participant_studies", ["study_id"], name: "index_participant_studies_on_study_id", using: :btree
 
   create_table "participants", force: :cascade do |t|
     t.string   "identifier"
@@ -103,4 +130,12 @@ ActiveRecord::Schema.define(version: 20160213042930) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "datapoints", "datastreams"
+  add_foreign_key "datasources", "m_cerebrum_applications"
+  add_foreign_key "datasources", "m_cerebrum_platform_apps"
+  add_foreign_key "datasources", "m_cerebrum_platforms"
+  add_foreign_key "datastreams", "datasources"
+  add_foreign_key "datastreams", "participants"
+  add_foreign_key "participant_studies", "participants"
+  add_foreign_key "participant_studies", "studies"
 end
