@@ -13,5 +13,18 @@ ActiveAdmin.register Datapoint do
 #   permitted
 # end
 
+  permit_params :datastream_id,
+                :timestamp,
+                :sample
+
+  form do |f|
+    f.semantic_errors
+    f.inputs do
+      f.input :datastream_id
+      f.input :timestamp
+      f.input :sample, as: :text
+    end
+    f.actions
+  end
 
 end

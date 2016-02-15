@@ -13,5 +13,16 @@ ActiveAdmin.register Datastream do
 #   permitted
 # end
 
+  permit_params :participant_id,
+                :datasource_id
+
+  form do |f|
+    f.semantic_errors
+    f.inputs do
+      f.input :participant_id
+      f.input :datasource_id
+    end
+    f.actions
+  end
 
 end
