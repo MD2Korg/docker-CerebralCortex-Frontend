@@ -1,3 +1,3 @@
 class Datapoint < ActiveRecord::Base
-  has_one :datastream
+  belongs_to :datastream
 end

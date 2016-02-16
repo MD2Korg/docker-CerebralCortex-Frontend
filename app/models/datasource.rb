@@ -1,8 +1,8 @@
 class Datasource < ActiveRecord::Base
-  has_one :m_cerebrum_application
-  has_one :m_cerebrum_platform
-  has_one :m_cerebrum_platform_app
-  belongs_to :datastream
+  belongs_to :m_cerebrum_application
+  belongs_to :m_cerebrum_platform
+  belongs_to :m_cerebrum_platform_app
+  has_one :datastream
 
   def display_name
     self.id.to_s + ':' + self.identifier + " (" + self.datasourcetype + ")"

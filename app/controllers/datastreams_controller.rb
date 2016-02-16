@@ -20,7 +20,6 @@ class DatastreamsController < InheritedResources::Base
   end
 
   private
-
     def datastream_params
       params.require(:datastream).permit(:datasource_id, :participant_id)
     end

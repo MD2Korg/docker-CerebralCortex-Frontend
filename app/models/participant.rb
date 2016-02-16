@@ -1,5 +1,5 @@
 class Participant < ActiveRecord::Base
-  belongs_to :datastream
+  has_many :datastream
   has_and_belongs_to_many :studies
 
   def display_name
