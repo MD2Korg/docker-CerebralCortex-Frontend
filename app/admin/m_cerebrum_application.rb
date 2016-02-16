@@ -13,8 +13,6 @@ ActiveAdmin.register MCerebrumApplication do
 #   permitted
 # end
 
-  belongs_to :datasource
-  navigation_menu :datasource
 
   permit_params :identifier, :applicationtype, :metadata
 

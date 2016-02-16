@@ -28,11 +28,14 @@ ActiveAdmin.register Datasource do
       f.input :datadescriptor, as: :text
       f.input :metadata, as: :text
 
-      f.input :m_cerebrum_platform_app_id
-      # f.input :m_cerebrum_platform_app_id, as: :search_select, url: m_cerebrum_platform_apps_path,
-      #         fields: [:identifier, :platformapptype]
-      f.input :m_cerebrum_platform_id
-      f.input :m_cerebrum_application_id
+      f.input :m_cerebrum_application_id, as: :search_select, url: admin_m_cerebrum_applications_path,
+              fields: [:identifier], display_name: 'identifier'
+
+      f.input :m_cerebrum_platform_id, as: :search_select, url: admin_m_cerebrum_platforms_path,
+              fields: [:identifier], display_name: 'identifier'
+
+      f.input :m_cerebrum_platform_app_id, as: :search_select, url: admin_m_cerebrum_platform_apps_path,
+              fields: [:identifier], display_name: 'identifier'
     end
     f.actions
   end

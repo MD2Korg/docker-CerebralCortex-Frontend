@@ -19,8 +19,12 @@ ActiveAdmin.register Datastream do
   form do |f|
     f.semantic_errors
     f.inputs do
-      f.input :participant_id
-      f.input :datasource_id
+      f.input :participant_id, as: :search_select, url: admin_participants_path,
+              fields: [:identifier], display_name: 'identifier'
+
+      f.input :datasource_id, as: :search_select, url: admin_datasources_path,
+              fields: [:identifier], display_name: 'identifier'
+
     end
     f.actions
   end

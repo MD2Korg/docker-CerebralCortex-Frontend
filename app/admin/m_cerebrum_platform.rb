@@ -12,8 +12,6 @@ ActiveAdmin.register MCerebrumPlatform do
 #   permitted << :other if resource.something?
 #   permitted
 # end
-  belongs_to :datasource
-  navigation_menu :datasource
 
 
   permit_params :identifier, :platformtype, :metadata
