@@ -3,6 +3,14 @@ Rails.application.routes.draw do
 
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
+
+
+  resources :datapoints do
+    collection do
+      post :bulkload
+    end
+  end
+
   resources :m_cerebrum_applications
   resources :datasources
   resources :datapoints
