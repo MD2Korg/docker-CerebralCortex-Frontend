@@ -6,7 +6,7 @@
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  datasource_id  :integer
-#  participant_id :integer
+#  participant_id :uuid
 #
 # Indexes
 #

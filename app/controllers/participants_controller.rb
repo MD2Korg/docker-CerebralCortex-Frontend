@@ -9,20 +9,20 @@ class ParticipantsController < InheritedResources::Base
   end
 
   def create
-    @participant = Participant.new(participant_params)
+    @participant = Participant.where(id: participant_params['id']).first_or_create(participant_params)
+
     respond_to do |format|
       if @participant.save
-        logger.debug @participant
-        logger.debug @participant.inspect
         format.json { render json: @participant }
       end
     end
+
   end
 
   private
 
     def participant_params
-      params.require(:participant).permit(:identifier)
+      params.require(:participant).permit(:identifier, :id)
     end
 end
 

@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 20160214210937) do
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
     t.integer  "datasource_id"
-    t.integer  "participant_id"
+    t.uuid "participant_id"
   end
 
   add_index "datastreams", ["datasource_id"], name: "index_datastreams_on_datasource_id", using: :btree
@@ -111,14 +111,14 @@ ActiveRecord::Schema.define(version: 20160214210937) do
   end
 
   create_table "participant_studies", force: :cascade do |t|
-    t.integer "participant_id"
+    t.uuid "participant_id"
     t.integer "study_id"
   end
 
   add_index "participant_studies", ["participant_id"], name: "index_participant_studies_on_participant_id", using: :btree
   add_index "participant_studies", ["study_id"], name: "index_participant_studies_on_study_id", using: :btree
 
-  create_table "participants", force: :cascade do |t|
+  create_table "participants", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "identifier"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
