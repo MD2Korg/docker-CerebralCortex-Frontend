@@ -9,8 +9,8 @@
 #
 
 class Participant < ActiveRecord::Base
-  has_many :datastream
-  has_and_belongs_to_many :studies
+  has_many :participantStudies
+  has_many :studies, through: :participantStudies
 
   def display_name
     self.identifier + ' (' + self.id.to_s + ')'

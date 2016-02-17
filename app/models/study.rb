@@ -10,7 +10,9 @@
 #
 
 class Study < ActiveRecord::Base
-  has_and_belongs_to_many :participants
+  has_many :participantStudies
+  has_many :participants, through: :participantStudies
+
 
   def display_name
     self.id.to_s + ':' + self.identifier

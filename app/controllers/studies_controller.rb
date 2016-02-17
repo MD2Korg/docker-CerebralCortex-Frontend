@@ -20,8 +20,30 @@ class StudiesController < InheritedResources::Base
     end
   end
 
+  def registerParticipant
+    register_params = registerParticipant_params(params)
+    studyid = register_params['study_id']
+
+    participantid = register_params['participant_id']
+
+    @participantStudy = ParticipantStudy.where(participant_id: register_params['participant_id'], study_id: register_params['study_id'])
+                            .first_or_create(:participant_id => register_params['participant_id'], :study_id => register_params['study_id'])
+
+
+    respond_to do |format|
+      if @participantStudy.save
+        format.json { render json: @participantStudy }
+      end
+    end
+
+  end
+
   private
-    def study_params
+  def registerParticipant_params(my_params)
+    my_params.permit!
+  end
+
+  def study_params
       params.require(:study).permit(:identifier, :name, :participant_ids => [])
     end
 end
