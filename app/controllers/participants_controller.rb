@@ -22,7 +22,7 @@ class ParticipantsController < InheritedResources::Base
   private
 
     def participant_params
-      params.require(:participant).permit(:identifier, :id)
+      params.require(:participant).permit(:identifier, :id, :study_ids => [])
     end
 end
 

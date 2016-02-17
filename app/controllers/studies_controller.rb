@@ -1,5 +1,7 @@
 class StudiesController < InheritedResources::Base
 
+  @participants = Participant.all
+
   def index
     @study = Study.all
   end
@@ -20,7 +22,7 @@ class StudiesController < InheritedResources::Base
 
   private
     def study_params
-      params.require(:study).permit(:identifier, :name)
+      params.require(:study).permit(:identifier, :name, :participant_ids => [])
     end
 end
 
