@@ -22,10 +22,12 @@ class DatapointsController < InheritedResources::Base
   def bulkload
     datastreamid = datapoint_params['datastream_id']
 
-    params['data'].each do |dp|
+    data = params['data'].map do |dp|
       dp['datastream_id'] = datastreamid
-      @datapoint = Datapoint.create(datapoint_bulk_params(dp))
+      Datapoint.new(datapoint_bulk_params(dp))
     end
+
+    Datapoint.import data
 
     respond_to do |format|
       msg = {:status => "ok", :message => 'Successfully loaded datapoints', :number => params['data'].count}

@@ -11,6 +11,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :datasources do
+    collection do
+      post :register
+    end
+  end
+
   resources :m_cerebrum_applications
   resources :datasources
   resources :datapoints
