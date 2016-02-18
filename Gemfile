@@ -38,6 +38,9 @@ gem 'rspec'
 require 'multi_json'
 
 
+# Require awesome print to pretty print ruby objects
+gem 'awesome_print', require: "ap"
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

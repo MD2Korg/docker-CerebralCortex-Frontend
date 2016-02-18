@@ -13,6 +13,6 @@ class Participant < ActiveRecord::Base
   has_many :studies, through: :participantStudies
 
   def display_name
-    self.identifier + ' (' + self.id.to_s + ')'
+    self.identifier.to_s + ' (' + self.id.to_s + ')'
   end
 end

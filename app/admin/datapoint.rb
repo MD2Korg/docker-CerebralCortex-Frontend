@@ -17,6 +17,17 @@ ActiveAdmin.register Datapoint do
                 :timestamp,
                 :sample
 
+
+  # index do
+  #   id_column
+  #   column :datastream_id
+  #   column :timestamp
+  #   column :sample
+  #   column :created_at
+  #   column :updated_at
+  #   actions
+  # end
+
   form do |f|
     f.semantic_errors
     f.inputs do
@@ -26,5 +37,6 @@ ActiveAdmin.register Datapoint do
     end
     f.actions
   end
+
 
 end

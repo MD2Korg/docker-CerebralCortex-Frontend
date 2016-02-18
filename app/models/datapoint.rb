@@ -8,6 +8,7 @@
 #  updated_at    :datetime         not null
 #  datastream_id :integer
 #  sample        :jsonb
+#  offset        :integer
 #
 # Indexes
 #

@@ -22,17 +22,29 @@ class DatapointsController < InheritedResources::Base
   def bulkload
     datastreamid = datapoint_params['datastream_id']
 
-    data = params['data'].map do |dp|
-      dp['datastream_id'] = datastreamid
-      Datapoint.new(datapoint_bulk_params(dp))
+    if params['data'].present?
+      data = params['data'].map do |dp|
+        p = {}
+        p['datastream_id'] = datastreamid
+        p['sample'] = datapoint_bulk_params(dp)['sample']
+        p['timestamp'] = Time.at(datapoint_bulk_params(dp)['dateTime']/1000.0).utc.to_datetime
+        p['offset'] = datapoint_bulk_params(dp)['offset']/3600000.0
+        logger.ap p
+        Datapoint.new(p)
+      end
+
+      Datapoint.import data
+      respond_to do |format|
+        msg = {:status => "ok", :message => 'Successfully loaded datapoints', :count => params['data'].count}
+        format.json { render json: msg }
+      end
+    else
+      respond_to do |format|
+        msg = {:status => "error", :message => 'No data points in array', :count => 0}
+        format.json { render json: msg }
+      end
     end
 
-    Datapoint.import data
-
-    respond_to do |format|
-      msg = {:status => "ok", :message => 'Successfully loaded datapoints', :number => params['data'].count}
-      format.json { render json: msg }
-    end
 
   end
 

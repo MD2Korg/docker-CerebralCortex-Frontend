@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160217062019) do
+ActiveRecord::Schema.define(version: 20160217225229) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20160217062019) do
     t.datetime "updated_at",    null: false
     t.integer  "datastream_id"
     t.jsonb    "sample"
+    t.integer "offset"
   end
 
   add_index "datapoints", ["datastream_id"], name: "index_datapoints_on_datastream_id", using: :btree

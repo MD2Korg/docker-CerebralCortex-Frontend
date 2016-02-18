@@ -33,15 +33,35 @@ class DatasourcesController < InheritedResources::Base
     platform = parameters['datasource']['platform']
     platformapp = parameters['datasource']['platformapp']
 
-    @mcapplication = MCerebrumApplication.where(identifier: application['id'], applicationtype: application['type'])
-                         .first_or_create(:identifier => application['id'], :applicationtype => application['type'], :metadata => application['metadata'])
-    @mcplatform = MCerebrumPlatform.where(identifier: platform['id'], platformtype: platform['type'])
-                      .first_or_create(:identifier => platform['id'], :platformtype => platform['type'], :metadata => platform['metadata'])
-    @mcplatformapp = MCerebrumPlatformApp.where(identifier: platformapp['id'], platformapptype: platformapp['type'])
-                         .first_or_create(:identifier => platformapp['id'], :platformapptype => platformapp['type'], :metadata => platformapp['metadata'])
+    logger.ap parameters
+
+    if application.present?
+      @mcapplication = MCerebrumApplication.where(identifier: application['id'], applicationtype: application['type'])
+                           .first_or_create(:identifier => application['id'], :applicationtype => application['type'], :metadata => application['metadata'])
+    else
+      @mcapplication = MCerebrumApplication.where(identifier: nil, applicationtype: nil).first_or_create(:identifier => nil, :applicationtype => nil)
+    end
+
+    if platform.present?
+      @mcplatform = MCerebrumPlatform.where(identifier: platform['id'], platformtype: platform['type'])
+                        .first_or_create(:identifier => platform['id'], :platformtype => platform['type'], :metadata => platform['metadata'])
+    else
+      @mcplatform = MCerebrumPlatform.where(identifier: nil, platformtype: nil).first_or_create(:identifier => nil, :platformtype => nil)
+    end
+
+    if platformapp.present?
+      @mcplatformapp = MCerebrumPlatformApp.where(identifier: platformapp['id'], platformapptype: platformapp['type'])
+                           .first_or_create(:identifier => platformapp['id'], :platformapptype => platformapp['type'], :metadata => platformapp['metadata'])
+    else
+      @mcplatformapp = MCerebrumPlatformApp.where(identifier: nil, platformapptype: nil).first_or_create(:identifier => nil, :platformapptype => nil)
+    end
 
     ds = parameters['datasource']
-    @datasource = Datasource.where(identifier: ds['id'], datasourcetype: ds['type'])
+    @datasource = Datasource.where(identifier: ds['id'],
+                                   datasourcetype: ds['type'],
+                                   m_cerebrum_application_id: @mcapplication.id,
+                                   m_cerebrum_platform_id: @mcplatform.id,
+                                   m_cerebrum_platform_app_id: @mcplatformapp.id)
                       .first_or_create(:identifier => ds['id'],
                                        :datasourcetype => ds['type'],
                                        :datadescriptor => ds['datadescriptor'],
@@ -52,10 +72,11 @@ class DatasourcesController < InheritedResources::Base
                       )
 
     @datastream = Datastream.where(participant_id: participant_id, datasource_id: @datasource.id).first_or_create(participant_id: participant_id, datasource_id: @datasource.id)
-    logger.info @datastream.inspect
+
+    #logger.ap @datasource
 
     respond_to do |format|
-      msg = {:status => "ok", :message => 'Successfully loaded datasource', :datasource_id => @datasource.id.to_s}
+      msg = {:status => "ok", :message => 'Successfully loaded datasource', :datastream_id => @datastream.id.to_s}
       format.json { render json: msg }
     end
 
