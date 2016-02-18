@@ -33,7 +33,6 @@ class DatasourcesController < InheritedResources::Base
     platform = parameters['datasource']['platform']
     platformapp = parameters['datasource']['platformapp']
 
-    logger.ap parameters
 
     if application.present?
       @mcapplication = MCerebrumApplication.where(identifier: application['id'], applicationtype: application['type'])
