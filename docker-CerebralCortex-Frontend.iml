@@ -5,20 +5,25 @@
       <configuration>
         <RAILS_FACET_CONFIG_ID NAME="RAILS_FACET_SUPPORT_REMOVED" VALUE="false" />
         <RAILS_FACET_CONFIG_ID NAME="RAILS_TESTS_SOURCES_PATCHED" VALUE="true" />
-        <RAILS_FACET_CONFIG_ID NAME="RAILS_FACET_APPLICATION_ROOT" VALUE="$MODULE_DIR$" />
+        <RAILS_FACET_CONFIG_ID NAME="RAILS_FACET_APPLICATION_ROOT" VALUE="$MODULE_DIR$/cerebralcortex" />
       </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/.bundle" />
-      <excludeFolder url="file://$MODULE_DIR$/components" />
-      <excludeFolder url="file://$MODULE_DIR$/public/system" />
-      <excludeFolder url="file://$MODULE_DIR$/tmp" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/bundle" />
+      <sourceFolder url="file://$MODULE_DIR$/cerebralcortex/spec" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/cerebralcortex/app" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cerebralcortex/db" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/cerebralcortex/public" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/cerebralcortex/config" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/cerebralcortex/test" type="java-test-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/cerebralcortex/.bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/cerebralcortex/components" />
+      <excludeFolder url="file://$MODULE_DIR$/cerebralcortex/log" />
+      <excludeFolder url="file://$MODULE_DIR$/cerebralcortex/public/system" />
+      <excludeFolder url="file://$MODULE_DIR$/cerebralcortex/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/cerebralcortex/vendor/bundle" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -61,6 +66,7 @@
     <orderEntry type="library" scope="PROVIDED" name="jbuilder (v2.4.1, ruby-2.3.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jquery-rails (v4.1.0, ruby-2.3.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jquery-ui-rails (v5.0.5, ruby-2.3.0-p0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="json (v1.8.2, ruby-2.3.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="kaminari (v0.16.3, ruby-2.3.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="loofah (v2.0.3, ruby-2.3.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mail (v2.6.3, ruby-2.3.0-p0) [gem]" level="application" />
@@ -107,6 +113,6 @@
   </component>
   <component name="RModuleSettingsStorage">
     <LOAD_PATH number="0" />
-    <I18N_FOLDERS number="1" string0="$MODULE_DIR$/config/locales" />
+    <I18N_FOLDERS number="1" string0="$MODULE_DIR$/cerebralcortex/config/locales" />
   </component>
 </module>
