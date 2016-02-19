@@ -37,6 +37,7 @@ gem 'rspec'
 
 require 'multi_json'
 
+gem "passenger", ">= 5.0.25", require: "phusion_passenger/rack_handler"
 
 # Require awesome print to pretty print ruby objects
 gem 'awesome_print', require: "ap"
