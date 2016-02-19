@@ -25,8 +25,32 @@ class DatasourcesController < InheritedResources::Base
   end
 
 
+  def transform_hash(original, options={}, &block)
+    original.inject({}) { |result, (key, value)|
+      value = if (options[:deep] && Hash === value)
+                transform_hash(value, options, &block)
+              else
+                value
+              end
+      block.call(result, key, value)
+      result
+    }
+  end
+
+  def deep_stringify_keys(hash)
+    transform_hash(hash, :deep => true) { |hash, key, value|
+      if value.instance_of? String
+        hash[key] = value.force_encoding("ISO-8859-1").encode("UTF-8")
+      else
+        hash[key] = value
+      end
+    }
+  end
+
   def register
     parameters = datasource_register_params(params)
+    parameters = deep_stringify_keys(parameters)
+
     participant_id = parameters['participant_id']
 
     application = parameters['datasource']['application']
@@ -56,6 +80,7 @@ class DatasourcesController < InheritedResources::Base
     end
 
     ds = parameters['datasource']
+    # logger.ap ds
     @datasource = Datasource.where(identifier: ds['id'],
                                    datasourcetype: ds['type'],
                                    m_cerebrum_application_id: @mcapplication.id,

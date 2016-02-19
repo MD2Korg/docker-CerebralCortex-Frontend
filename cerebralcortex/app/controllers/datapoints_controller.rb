@@ -29,7 +29,7 @@ class DatapointsController < InheritedResources::Base
         p['sample'] = datapoint_bulk_params(dp)['sample']
         p['timestamp'] = Time.at(datapoint_bulk_params(dp)['dateTime']/1000.0).utc.to_datetime
         p['offset'] = datapoint_bulk_params(dp)['offset']/3600000.0
-        logger.ap p
+        # logger.ap p
         Datapoint.new(p)
       end
 
