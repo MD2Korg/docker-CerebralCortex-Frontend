@@ -15,13 +15,23 @@ FROM phusion/passenger-full:0.9.18
 # Set correct environment variables.
 ENV HOME /root
 
+
+# Install bundle of gems
+WORKDIR /tmp
+ADD cerebralcortex/Gemfile /tmp/
+ADD cerebralcortex/Gemfile.lock /tmp/
+RUN bundle install
+
+
 RUN rm -f /etc/service/nginx/down
 
 RUN rm -f /etc/nginx/sites-enabled/default
 ADD cerebralcortex.conf /etc/nginx/sites-enabled/cerebralcortex.conf
 ADD rails-env.conf /etc/nginx/main.d/rails-env.conf
 # RUN mkdir /home/app/cerebralcortex
-VOLUME ["/home/app/cerebralcortex"]
+ADD cerebralcortex /home/app/cerebralcortex
+RUN chown app:app -R /home/app/cerebralcortex
+# VOLUME ["/home/app/cerebralcortex"]
 
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]
@@ -49,12 +59,6 @@ CMD ["/sbin/my_init"]
 # && ruby-switch --set ruby2.3 \
 # && apt-get clean \
 # && rm -rf /var/lib/apt/lists/*
-
-# Install bundle of gems
-WORKDIR /tmp
-ADD cerebralcortex/Gemfile /tmp/
-ADD cerebralcortex/Gemfile.lock /tmp/
-RUN bundle install
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
