@@ -83,5 +83,6 @@ test:
 production:
   <<: *default
   database: cerebralcortex_production
-  username: cerebralcortex
-  password: <%= ENV['CEREBRALCORTEX_DATABASE_PASSWORD'] %>
+#  username: cerebralcortex
+  username: hnat
+#  password: <%= ENV['CEREBRALCORTEX_DATABASE_PASSWORD'] %>
