@@ -16,6 +16,11 @@ ActiveAdmin.register Datastream do
   permit_params :participant_id,
                 :datasource_id
 
+  filter :participant_id, as: :select
+  filter :datasource_id, as: :select
+  filter :created_at, as: :date_range
+  filter :updated_at, as: :date_range
+
   form do |f|
     f.semantic_errors
     f.inputs do

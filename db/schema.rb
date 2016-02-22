@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 20160217225229) do
     t.datetime "updated_at",    null: false
     t.integer  "datastream_id"
     t.jsonb    "sample"
-    t.integer "offset"
+    t.integer  "offset"
   end
 
   add_index "datapoints", ["datastream_id"], name: "index_datapoints_on_datastream_id", using: :btree
@@ -81,17 +81,17 @@ ActiveRecord::Schema.define(version: 20160217225229) do
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
     t.integer  "datasource_id"
-    t.uuid "participant_id"
+    t.uuid     "participant_id"
   end
 
   add_index "datastreams", ["datasource_id"], name: "index_datastreams_on_datasource_id", using: :btree
   add_index "datastreams", ["participant_id"], name: "index_datastreams_on_participant_id", using: :btree
 
   create_table "m_cerebrum_applications", force: :cascade do |t|
-    t.string "applicationtype"
+    t.string   "applicationtype"
     t.string   "identifier"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.jsonb    "metadata"
   end
 
@@ -112,10 +112,10 @@ ActiveRecord::Schema.define(version: 20160217225229) do
   end
 
   create_table "participant_studies", force: :cascade do |t|
-    t.uuid "participant_id"
-    t.integer "study_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.uuid     "participant_id"
+    t.integer  "study_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   add_index "participant_studies", ["participant_id"], name: "index_participant_studies_on_participant_id", using: :btree
