@@ -83,5 +83,6 @@ test:
 production:
   <<: *default
   database: cerebralcortex_production
+  port: <%= ENV['CEREBRALCORTEX_DATABASE_PORT'] %>
   username: cerebralcortex
   password: <%= ENV['CEREBRALCORTEX_DATABASE_PASSWORD'] %>
