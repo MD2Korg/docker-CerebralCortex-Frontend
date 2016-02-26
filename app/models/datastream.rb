@@ -25,6 +25,6 @@ class Datastream < ActiveRecord::Base
   has_many :datapoints
 
   def display_name
-    self.id.to_s + ':Datasource(' + self.datasource_id.to_s + '):Participant(' + self.participant_id.to_s + ')'
+    self.datasource.display_name + ' - ' + self.participant.display_name + ' (' +self.id.to_s + ')'
   end
 end

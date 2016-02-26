@@ -59,21 +59,21 @@ class DatasourcesController < InheritedResources::Base
 
 
     if application.present?
-      @mcapplication = MCerebrumApplication.where(identifier: application['id'], applicationtype: application['type'])
+      @mcapplication = MCerebrumApplication.where(identifier: application['id'], applicationtype: application['type'], metadata: [application['metadata']])
                            .first_or_create(:identifier => application['id'], :applicationtype => application['type'], :metadata => application['metadata'])
     else
       @mcapplication = MCerebrumApplication.where(identifier: nil, applicationtype: nil).first_or_create(:identifier => nil, :applicationtype => nil)
     end
 
     if platform.present?
-      @mcplatform = MCerebrumPlatform.where(identifier: platform['id'], platformtype: platform['type'])
+      @mcplatform = MCerebrumPlatform.where(identifier: platform['id'], platformtype: platform['type'], metadata: [platform['metadata']])
                         .first_or_create(:identifier => platform['id'], :platformtype => platform['type'], :metadata => platform['metadata'])
     else
       @mcplatform = MCerebrumPlatform.where(identifier: nil, platformtype: nil).first_or_create(:identifier => nil, :platformtype => nil)
     end
 
     if platformapp.present?
-      @mcplatformapp = MCerebrumPlatformApp.where(identifier: platformapp['id'], platformapptype: platformapp['type'])
+      @mcplatformapp = MCerebrumPlatformApp.where(identifier: platformapp['id'], platformapptype: platformapp['type'], metadata: [platformapp['metadata']])
                            .first_or_create(:identifier => platformapp['id'], :platformapptype => platformapp['type'], :metadata => platformapp['metadata'])
     else
       @mcplatformapp = MCerebrumPlatformApp.where(identifier: nil, platformapptype: nil).first_or_create(:identifier => nil, :platformapptype => nil)
@@ -83,12 +83,14 @@ class DatasourcesController < InheritedResources::Base
     # logger.ap ds
     @datasource = Datasource.where(identifier: ds['id'],
                                    datasourcetype: ds['type'],
+                                   :datadescriptor => ds['dataDescriptors'],
+                                   :metadata => [ds['metadata']],
                                    m_cerebrum_application_id: @mcapplication.id,
                                    m_cerebrum_platform_id: @mcplatform.id,
                                    m_cerebrum_platform_app_id: @mcplatformapp.id)
                       .first_or_create(:identifier => ds['id'],
                                        :datasourcetype => ds['type'],
-                                       :datadescriptor => ds['datadescriptor'],
+                                       :datadescriptor => ds['dataDescriptors'],
                                        :metadata => ds['metadata'],
                                        :m_cerebrum_application_id => @mcapplication.id,
                                        :m_cerebrum_platform_id => @mcplatform.id,

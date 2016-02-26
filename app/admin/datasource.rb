@@ -20,6 +20,9 @@ ActiveAdmin.register Datasource do
                 :m_cerebrum_platform_id,
                 :m_cerebrum_application_id
 
+  preserve_default_filters!
+  remove_filter :datastream
+
   form do |f|
     f.semantic_errors
     f.inputs do

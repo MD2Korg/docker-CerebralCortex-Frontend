@@ -22,4 +22,8 @@
 class ParticipantStudy < ActiveRecord::Base
   belongs_to :participant
   belongs_to :study
+
+  def display_name
+    self.participant.display_name + ' - ' + self.study.display_name
+  end
 end

@@ -33,6 +33,6 @@ class Datasource < ActiveRecord::Base
   has_one :datastream
 
   def display_name
-    self.id.to_s + ':' + self.identifier.to_s + " (" + self.datasourcetype.to_s + ")"
+    self.datasourcetype.to_s + " (" + self.identifier.to_s + ") [" + self.id.to_s + ']'
   end
 end

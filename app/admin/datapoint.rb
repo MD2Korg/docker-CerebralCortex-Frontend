@@ -17,16 +17,22 @@ ActiveAdmin.register Datapoint do
                 :timestamp,
                 :sample
 
+  preserve_default_filters!
+  remove_filter :datastream
+  filter :datastream_id, as: :select
 
-  # index do
-  #   id_column
-  #   column :datastream_id
-  #   column :timestamp
-  #   column :sample
-  #   column :created_at
-  #   column :updated_at
-  #   actions
-  # end
+  index do
+    selectable_column
+    id_column
+    column :timestamp
+    #my stuff here
+    column :datastream_id
+    column "participant" do |i|
+      i.datastream.participant.identifier + ' (' + i.datastream.participant_id + ')'
+    end
+    column :sample
+    actions
+  end
 
   form do |f|
     f.semantic_errors

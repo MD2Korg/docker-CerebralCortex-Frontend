@@ -15,6 +15,6 @@ class Study < ActiveRecord::Base
 
 
   def display_name
-    self.id.to_s + ':' + self.identifier.to_s
+    self.identifier.to_s + ' (' + self.id.to_s + ')'
   end
 end

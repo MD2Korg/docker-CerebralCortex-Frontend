@@ -25,4 +25,23 @@ ActiveAdmin.register Study do
     f.actions
   end
 
+  show do
+    attributes_table do
+      row :id
+      row :identifier
+      row :name
+      row :created_at
+      row :updated_at
+    end
+    active_admin_comments
+  end
+
+  sidebar "Participant details", only: :show do
+    table_for study.participants do
+      column :id
+      column :identifier
+    end
+  end
+
+
 end
