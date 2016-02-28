@@ -16,7 +16,7 @@ ActiveAdmin.register_page "Dashboard" do
           ul do
             Study.all.map do |study|
               if study.identifier.present? and study.name.present?
-                li link_to(study.identifier + ': ' + study.name, admin_study_path(study))
+                li link_to(study.identifier.to_s + ': ' + study.name.to_s, admin_study_path(study))
               end
             end
           end
@@ -26,7 +26,7 @@ ActiveAdmin.register_page "Dashboard" do
           ul do
             Participant.all.map do |participant|
               if participant.identifier.present? and participant.id.present?
-                li link_to(participant.identifier + ' (' + participant.id + ')', admin_participant_path(participant))
+                li link_to(participant.identifier.to_s + ' (' + participant.id.to_s + ')', admin_participant_path(participant))
               end
             end
           end
