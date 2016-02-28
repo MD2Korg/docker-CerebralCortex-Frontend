@@ -19,7 +19,7 @@ ActiveAdmin.register Datapoint do
 
   preserve_default_filters!
   remove_filter :datastream
-  filter :datastream_id, as: :select
+  filter :datastream_id, as: :select, collection: -> { Datastream.all }
 
   index do
     selectable_column
