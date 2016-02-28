@@ -3,28 +3,21 @@ ActiveAdmin.register_page "Dashboard" do
   menu priority: 1, label: proc{ I18n.t("active_admin.dashboard") }
 
   content title: proc{ I18n.t("active_admin.dashboard") } do
-    div class: "blank_slate_container", id: "dashboard_default_message" do
-      span class: "blank_slate" do
-        span I18n.t("active_admin.dashboard_welcome.welcome")
-        small I18n.t("active_admin.dashboard_welcome.call_to_action")
-      end
-    end
-
-    # Here is an example of a simple dashboard with columns and panels.
+    # div class: "blank_slate_container", id: "dashboard_default_message" do
+    #   span class: "blank_slate" do
+    #     span I18n.t("active_admin.dashboard_welcome.welcome")
+    #     small I18n.t("active_admin.dashboard_welcome.call_to_action")
+    #   end
+    # end
 
     columns do
       column do
-        # panel "Recent Posts" do
-        #   ul do
-        #     Post.recent(5).map do |post|
-        #       li link_to(post.title, admin_post_path(post))
-        #     end
-        #   end
-        # end
         panel "Studies" do
           ul do
             Study.all.map do |study|
-              li link_to(study.identifier + ': ' + study.name, admin_study_path(study))
+              if study.identifier.present? and study.name.present?
+                li link_to(study.identifier + ': ' + study.name, admin_study_path(study))
+              end
             end
           end
         end
@@ -32,7 +25,9 @@ ActiveAdmin.register_page "Dashboard" do
         panel "Participants" do
           ul do
             Participant.all.map do |participant|
-              li link_to(participant.identifier + ' (' + participant.id + ')', admin_participant_path(participant))
+              if participant.identifier.present? and participant.id.present?
+                li link_to(participant.identifier + ' (' + participant.id + ')', admin_participant_path(participant))
+              end
             end
           end
         end
