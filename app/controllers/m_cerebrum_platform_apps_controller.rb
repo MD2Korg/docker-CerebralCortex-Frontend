@@ -21,7 +21,7 @@ class MCerebrumPlatformAppsController < InheritedResources::Base
   private
   def m_cerebrum_platform_app_params
     # TWH Removed for JSON API
-    #params.require(:m_cerebrum_platform_app).permit(:platformapptype, :identifier)
+    # params.require(:m_cerebrum_platform_app).permit(:platformapptype, :identifier)
     params.require(:m_cerebrum_platform_app).permit!
   end
 end

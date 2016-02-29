@@ -21,7 +21,7 @@ class StudiesController < InheritedResources::Base
   end
 
   def register_participant
-    register_params = registerParticipant_params(params)
+    register_params = register_participant_params(params)
 
     @participant_study = ParticipantStudy.where(participant_id: register_params['participant_id'], study_id: register_params['study_id'])
                             .first_or_create(:participant_id => register_params['participant_id'], :study_id => register_params['study_id'])
@@ -35,7 +35,7 @@ class StudiesController < InheritedResources::Base
   end
 
   private
-  def registerParticipant_params(my_params)
+  def register_participant_params(my_params)
     my_params.permit!
   end
 
