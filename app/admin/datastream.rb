@@ -23,19 +23,19 @@ ActiveAdmin.register Datastream do
     selectable_column
     id_column
     column "Participant" do |i|
-      i.participant.identifier + ' (' + i.participant.id + ')'
+      i.participant.display_name
     end
     column "Datasource" do |i|
-      i.datasource.identifier
+      i.datasource.display_name
     end
     column "Application" do |i|
-      i.datasource.m_cerebrum_application.identifier
+      i.datasource.m_cerebrum_application.display_name
     end
     column "Platform" do |i|
-      i.datasource.m_cerebrum_platform.identifier
+      i.datasource.m_cerebrum_platform.display_name
     end
     column "Platform App" do |i|
-      i.datasource.m_cerebrum_platform_app.identifier
+      i.datasource.m_cerebrum_platform_app.display_name
     end
     column 'Count' do |ds|
       ds.datapoints.count
