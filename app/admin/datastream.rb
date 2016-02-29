@@ -19,6 +19,34 @@ ActiveAdmin.register Datastream do
   preserve_default_filters!
   remove_filter :datapoints
 
+  index do
+    selectable_column
+    id_column
+    column "Participant" do |i|
+      i.participant.identifier + ' (' + i.participant.id + ')'
+    end
+    column "Datasource" do |i|
+      i.datasource.identifier
+    end
+    column "Application" do |i|
+      i.datasource.m_cerebrum_application.identifier
+    end
+    column "Platform" do |i|
+      i.datasource.m_cerebrum_platform.identifier
+    end
+    column "Platform App" do |i|
+      i.datasource.m_cerebrum_platform_app.identifier
+    end
+    column 'Count' do |ds|
+      ds.datapoints.count
+    end
+    column 'Count (last 24 hours)' do |ds|
+      ds.datapoints.where(timestamp: (Time.now.utc-24.hours)..(Time.now.utc)).count
+    end
+    actions
+  end
+
+
   form do |f|
     f.semantic_errors
     f.inputs do
