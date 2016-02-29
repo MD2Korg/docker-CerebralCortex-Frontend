@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   resources :studies do
     collection do
-      post :register_participant
+      post :register_participant, :path => 'registerParticipant' #TWH: Quick Fix, replace in app later
     end
   end
 

@@ -35,4 +35,15 @@ class Datasource < ActiveRecord::Base
   def display_name
     self.datasourcetype.to_s + " (" + self.identifier.to_s + ") [" + self.id.to_s + ']'
   end
+
+  def self.exists(id, type, dd, meta, mcapp, mcplat, mcplatapp)
+    where(identifier: id,
+          datasourcetype: type,
+          datadescriptor: dd,
+          metadata: meta,
+          m_cerebrum_application_id: mcapp,
+          m_cerebrum_platform_id: mcplat,
+          m_cerebrum_platform_app_id: mcplatapp)
+  end
+
 end
