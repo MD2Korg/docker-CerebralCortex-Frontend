@@ -1,4 +1,5 @@
 == README
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/6413a59d11734abfbbe3075d0e4eb814)](https://www.codacy.com/app/twhnat/docker-CerebralCortex-Frontend)
 
 This README would normally document whatever steps are necessary to get the
 application up and running.

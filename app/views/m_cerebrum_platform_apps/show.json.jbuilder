@@ -1,1 +1,1 @@
-json.extract! @mcerebrumPlatformApp, :created_at, :updated_at, :identifier, :platformapptype, :metadata
+json.extract! @mcerebrum_platform_app, :created_at, :updated_at, :identifier, :platformapptype, :metadata

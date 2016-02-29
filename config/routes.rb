@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   resources :studies do
     collection do
-      post :registerParticipant
+      post :register_participant
     end
   end
 

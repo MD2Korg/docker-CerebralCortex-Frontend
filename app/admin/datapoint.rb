@@ -25,7 +25,6 @@ ActiveAdmin.register Datapoint do
     selectable_column
     id_column
     column :timestamp
-    #my stuff here
     column :datastream_id
     column "participant" do |i|
       i.datastream.participant.identifier + ' (' + i.datastream.participant_id + ')'

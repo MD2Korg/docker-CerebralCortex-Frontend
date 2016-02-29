@@ -5,7 +5,7 @@ class DatapointsController < InheritedResources::Base
   end
 
   def show
-    @datapoint = Datapoint.find(params[:id])
+    @datapoint = Datapoint.find(datapoint_params[:id])
   end
 
   def create
@@ -54,10 +54,10 @@ class DatapointsController < InheritedResources::Base
     my_params.permit!
   end
 
-    def datapoint_params
-      # TWH Temporary to JSON API
-      # params.require(:datapoint).permit(:datastream_id, :timestamp, :sample)
-      params.require(:datapoint).permit!
-    end
+  def datapoint_params
+    # TWH Temporary to JSON API
+    # params.require(:datapoint).permit(:datastream_id, :timestamp, :sample)
+    params.require(:datapoint).permit!
+  end
 end
 

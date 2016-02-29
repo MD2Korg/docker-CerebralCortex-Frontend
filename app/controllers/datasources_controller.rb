@@ -5,7 +5,7 @@ class DatasourcesController < InheritedResources::Base
   end
 
   def show
-    @datasource = Datasource.find(params[:id])
+    @datasource = Datasource.find(datasource_params[:id])
   end
 
 
@@ -25,27 +25,6 @@ class DatasourcesController < InheritedResources::Base
   end
 
 
-  def transform_hash(original, options={}, &block)
-    original.inject({}) { |result, (key, value)|
-      value = if (options[:deep] && Hash === value)
-                transform_hash(value, options, &block)
-              else
-                value
-              end
-      block.call(result, key, value)
-      result
-    }
-  end
-
-  def deep_stringify_keys(hash)
-    transform_hash(hash, :deep => true) { |hash, key, value|
-      if value.instance_of? String
-        hash[key] = value.force_encoding("ISO-8859-1").encode("UTF-8")
-      else
-        hash[key] = value
-      end
-    }
-  end
 
   def register
     parameters = datasource_register_params(params)
@@ -99,7 +78,7 @@ class DatasourcesController < InheritedResources::Base
 
     @datastream = Datastream.where(participant_id: participant_id, datasource_id: @datasource.id).first_or_create(participant_id: participant_id, datasource_id: @datasource.id)
 
-    #logger.ap @datasource
+    # logger.ap @datasource
 
     respond_to do |format|
       msg = {:status => "ok", :message => 'Successfully loaded datasource', :datastream_id => @datastream.id.to_s}
@@ -110,14 +89,36 @@ class DatasourcesController < InheritedResources::Base
 
   private
 
+  def transform_hash(original, options={}, &block)
+    original.inject({}) { |result, (key, value)|
+      value = if (options[:deep] && Hash === value)
+                transform_hash(value, options, &block)
+              else
+                value
+              end
+      block.call(result, key, value)
+      result
+    }
+  end
+
+  def deep_stringify_keys(hash)
+    transform_hash(hash, :deep => true) { |hash, key, value|
+      if value.instance_of? String
+        hash[key] = value.force_encoding("ISO-8859-1").encode("UTF-8")
+      else
+        hash[key] = value
+      end
+    }
+  end
+
   def datasource_register_params(my_params)
     my_params.permit!
   end
 
   def datasource_params
-      # TWH: Temporary to the the API working
-      # params.require(:datasource).permit(:identifier, :datasourcetype, :datadescriptor, :metadata)
-      params.require(:datasource).permit!
-    end
+    # TWH: Temporary to the the API working
+    # params.require(:datasource).permit(:identifier, :datasourcetype, :datadescriptor, :metadata)
+    params.require(:datasource).permit!
+  end
 end
 

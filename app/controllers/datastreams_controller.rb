@@ -6,7 +6,7 @@ class DatastreamsController < InheritedResources::Base
   end
 
   def show
-    @datastream = Datastream.find(params[:id])
+    @datastream = Datastream.find(datastream_params[:id])
   end
 
   def create

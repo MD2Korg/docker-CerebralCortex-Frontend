@@ -1,11 +1,11 @@
 class MCerebrumApplicationsController < InheritedResources::Base
 
   def index
-    @mcerebrumApplication = MCerebrumApplication.all
+    @m_cerebrum_application = MCerebrumApplication.all
   end
 
   def show
-    @mcerebrumApplication = MCerebrumApplication.find(params[:id])
+    @m_cerebrum_application = MCerebrumApplication.find(params[:id])
   end
 
   def create
@@ -19,11 +19,10 @@ class MCerebrumApplicationsController < InheritedResources::Base
   end
 
   private
-
-    def m_cerebrum_application_params
-      #TWH Removed for JSON API
-      # params.require(:m_cerebrum_application).permit(:applicationtype, :identifier, :metadata)
-      params.require(:m_cerebrum_application).permit!
-    end
+  def m_cerebrum_application_params
+    # TWH Removed for JSON API
+    # params.require(:m_cerebrum_application).permit(:applicationtype, :identifier, :metadata)
+    params.require(:m_cerebrum_application).permit!
+  end
 end
 

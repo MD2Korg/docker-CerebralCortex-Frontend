@@ -1,11 +1,11 @@
 class MCerebrumPlatformAppsController < InheritedResources::Base
 
   def index
-    @mcerebrumPlatformApp = MCerebrumPlatformApp.all
+    @mcerebrum_platform_app = MCerebrumPlatformApp.all
   end
 
   def show
-    @mcerebrumPlatformApp = MCerebrumPlatformApp.find(params[:id])
+    @mcerebrum_platform_app = MCerebrumPlatformApp.find(params[:id])
   end
 
   def create
@@ -19,11 +19,10 @@ class MCerebrumPlatformAppsController < InheritedResources::Base
   end
 
   private
-
-    def m_cerebrum_platform_app_params
-      #TWH Removed for JSON API
-      #params.require(:m_cerebrum_platform_app).permit(:platformapptype, :identifier)
-      params.require(:m_cerebrum_platform_app).permit!
-    end
+  def m_cerebrum_platform_app_params
+    # TWH Removed for JSON API
+    #params.require(:m_cerebrum_platform_app).permit(:platformapptype, :identifier)
+    params.require(:m_cerebrum_platform_app).permit!
+  end
 end
 

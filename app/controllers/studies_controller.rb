@@ -20,19 +20,15 @@ class StudiesController < InheritedResources::Base
     end
   end
 
-  def registerParticipant
+  def register_participant
     register_params = registerParticipant_params(params)
-    studyid = register_params['study_id']
 
-    participantid = register_params['participant_id']
-
-    @participantStudy = ParticipantStudy.where(participant_id: register_params['participant_id'], study_id: register_params['study_id'])
+    @participant_study = ParticipantStudy.where(participant_id: register_params['participant_id'], study_id: register_params['study_id'])
                             .first_or_create(:participant_id => register_params['participant_id'], :study_id => register_params['study_id'])
 
-
     respond_to do |format|
-      if @participantStudy.save
-        format.json { render json: @participantStudy }
+      if @participant_study.save
+        format.json { render json: @participant_study }
       end
     end
 
@@ -44,7 +40,7 @@ class StudiesController < InheritedResources::Base
   end
 
   def study_params
-      params.require(:study).permit(:identifier, :name, :participant_ids => [])
-    end
+    params.require(:study).permit(:identifier, :name, :participant_ids => [])
+  end
 end
 
