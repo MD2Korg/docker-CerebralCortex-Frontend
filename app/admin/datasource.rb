@@ -23,6 +23,33 @@ ActiveAdmin.register Datasource do
   preserve_default_filters!
   remove_filter :datastream
 
+
+  index do
+    selectable_column
+    id_column
+
+    column :identifier
+    column :datasourcetype
+
+    column "Application" do |i|
+      i.m_cerebrum_application.display_name
+    end
+    column "Platform" do |i|
+      i.m_cerebrum_platform.display_name
+    end
+    column "Platform App" do |i|
+      i.m_cerebrum_platform_app.display_name
+    end
+    column 'Datastream count' do |ds|
+      Datastream.where(datasource_id: ds.id).count
+    end
+    column 'Datapoint count' do |ds|
+      Datapoint.where(datastream_id: Datastream.where(datasource_id: ds.id).collect(&:id)).count
+
+    end
+    actions
+  end
+
   form do |f|
     f.semantic_errors
     f.inputs do
