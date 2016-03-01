@@ -43,9 +43,11 @@ ActiveAdmin.register Datasource do
     f.actions
   end
 
-  sidebar "Datastreams", only: :show do
-    attributes_table_for Datastream.find_by(datasource_id: datasource.id) do
-      row :participant_id
+  sidebar "Datasource", only: :show do
+    table_for Datastream.where(datasource_id: datasource.id) do
+      column 'Participants', :participant_id do |pid|
+        Participant.find_by_id(pid.participant_id).display_name
+      end
     end
   end
 
