@@ -31,6 +31,34 @@ ActiveAdmin.register Participant do
       row :created_at
       row :updated_at
     end
+
+
+    table_for Datastream.where(participant_id: participant.id) do
+      column 'Datasource', :datasource_id do |ds|
+        Datasource.find_by_id(ds).display_name
+      end
+
+      column 'Data points', :id do |dsid|
+        Datapoint.where(datastream_id: dsid).count
+      end
+      column 'Data points (current day)', :id do |dsid|
+        Datapoint.where(datastream_id: dsid, timestamp: (Time.now.at_beginning_of_day)..(Time.now.at_end_of_day)).count
+      end
+    end
+
+    # sidebar "Datasource", only: :show do
+    #   table_for Datastream.where(datasource_id: datasource.id) do
+    #     column 'Participants', :participant_id do |pid|
+    #       Participant.find_by_id(pid.participant_id).display_name
+    #     end
+    #   end
+    # end
+    # column 'Datapoint count' do |ds|
+    #   Datapoint.where(datastream_id: Datastream.where(datasource_id: ds.id).collect(&:id)).count
+    #
+    # end
+
+
     active_admin_comments
   end
 
