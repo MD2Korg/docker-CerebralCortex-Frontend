@@ -35,7 +35,8 @@ ActiveAdmin.register Participant do
 
     table_for Datastream.where(participant_id: participant.id) do
       column :datasource_id
-      column 'Datasource', :datasource_id do |ds|
+      column :id
+      column 'ds.id', :datasource_id do |ds|
         ds.id
         # datas = Datasource.find_by_id(ds)
         # if datas.present?
