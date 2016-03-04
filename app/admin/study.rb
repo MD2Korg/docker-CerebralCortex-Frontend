@@ -89,6 +89,11 @@ ActiveAdmin.register Study do
         good=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY'))).count
         good
       end
+      column 'EMA (day)', :id do |i|
+        good=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY'))).count
+        good
+      end
+
 
     end
 
