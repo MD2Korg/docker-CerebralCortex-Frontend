@@ -49,7 +49,7 @@ ActiveAdmin.register Study do
       column 'RIP(1h)', :id do |i|
         good=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'AUTOSENSE_CHEST')))).where("sample ->> 0 = '0'").count
         bad=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'AUTOSENSE_CHEST')))).where("sample ->> 0 != '0'").count
-        (good.to_f/(good+bad)).round(3).to_s
+        (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + bad.to_s + ')'
       end
 
       column 'ECG', :id do |i|
@@ -60,7 +60,7 @@ ActiveAdmin.register Study do
       column 'ECG(1h)', :id do |i|
         good=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'AUTOSENSE_CHEST')))).where("sample ->> 1 = '0'").count
         bad=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'AUTOSENSE_CHEST')))).where("sample ->> 1 != '0'").count
-        (good.to_f/(good+bad)).round(3).to_s
+        (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + bad.to_s + ')'
       end
 
       column 'Wrist (AS)', :id do |i|
@@ -71,7 +71,7 @@ ActiveAdmin.register Study do
       column 'Wrist (AS)(1h)', :id do |i|
         good=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'AUTOSENSE_WRIST')))).where("sample ->> 0 = '0'").count
         bad=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'AUTOSENSE_WRIST')))).where("sample ->> 0 != '0'").count
-        (good.to_f/(good+bad)).round(3).to_s
+        (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + bad.to_s + ')'
       end
 
       column 'Wrist (MS)', :id do |i|
@@ -82,7 +82,7 @@ ActiveAdmin.register Study do
       column 'Wrist (MS)(1h)', :id do |i|
         good=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'MICROSOFT_BAND')))).where("sample ->> 0 = '0'").count
         bad=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'MICROSOFT_BAND')))).where("sample ->> 0 != '0'").count
-        (good.to_f/(good+bad)).round(3).to_s
+        (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + bad.to_s + ')'
       end
     end
 
