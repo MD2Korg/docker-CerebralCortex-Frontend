@@ -84,6 +84,12 @@ ActiveAdmin.register Study do
         bad=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'MICROSOFT_BAND')))).where("sample ->> 0 != '0'").count
         (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + bad.to_s + ')'
       end
+
+      column 'EMA', :id do |i|
+        good=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY'))).count
+        good
+      end
+
     end
 
 
