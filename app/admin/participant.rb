@@ -46,18 +46,6 @@ ActiveAdmin.register Participant do
       end
     end
 
-    # sidebar "Datasource", only: :show do
-    #   table_for Datastream.where(datasource_id: datasource.id) do
-    #     column 'Participants', :participant_id do |pid|
-    #       Participant.find_by_id(pid.participant_id).display_name
-    #     end
-    #   end
-    # end
-    # column 'Datapoint count' do |ds|
-    #   Datapoint.where(datastream_id: Datastream.where(datasource_id: ds.id).collect(&:id)).count
-    #
-    # end
-
 
     active_admin_comments
   end
