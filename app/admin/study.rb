@@ -36,8 +36,9 @@ ActiveAdmin.register Study do
 
 
     table_for study.participants do
-      column :id
-      column :identifier
+      column 'Identifier' do |i|
+        link_to i.identifier, admin_participant_path(i.id)
+      end
 
       column 'RIP', :id do |i|
         good=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'STATUS', m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: 'AUTOSENSE_CHEST')))).where("sample ->> 0 = '0'").count
