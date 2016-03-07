@@ -23,12 +23,19 @@ class StudiesController < InheritedResources::Base
   def register_participant
     register_params = register_participant_params(params)
 
-    @participant_study = ParticipantStudy.where(participant_id: register_params['participant_id'], study_id: register_params['study_id'])
-                            .first_or_create(:participant_id => register_params['participant_id'], :study_id => register_params['study_id'])
+    unless register_params['participant_id'].nil? or register_params['study_id'].nil?
+      @participant_study = ParticipantStudy.where(participant_id: register_params['participant_id'], study_id: register_params['study_id'])
+                               .first_or_create(:participant_id => register_params['participant_id'], :study_id => register_params['study_id'])
 
-    respond_to do |format|
-      if @participant_study.save
-        format.json { render json: @participant_study }
+      respond_to do |format|
+        if @participant_study.save
+          format.json { render json: @participant_study }
+        end
+      end
+    else
+      respond_to do |format|
+        msg = {:status => "error", :message => 'Invalid participant or study id'}
+        format.json { render json: msg }
       end
     end
 
