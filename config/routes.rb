@@ -21,16 +21,16 @@ Rails.application.routes.draw do
     end
   end
 
-  if Rails.env.development?
-    resources :m_cerebrum_applications
-    resources :datasources
-    resources :datapoints
-    resources :datastreams
-    resources :studies
-    resources :participants
-    resources :m_cerebrum_platform_apps
-    resources :m_cerebrum_platforms
-  end
+  # if Rails.env.development?
+  #   resources :m_cerebrum_applications
+  #   resources :datasources
+  #   resources :datapoints
+  #   resources :datastreams
+  #   resources :studies
+  #   resources :participants
+  #   resources :m_cerebrum_platform_apps
+  #   resources :m_cerebrum_platforms
+  # end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
