@@ -32,63 +32,72 @@ class DatasourcesController < InheritedResources::Base
 
     participant_id = parameters['participant_id']
 
-    application = parameters['datasource']['application']
-    platform = parameters['datasource']['platform']
-    platformapp = parameters['datasource']['platformapp']
+    if participant_id.present?
+      application = parameters['datasource']['application']
+      platform = parameters['datasource']['platform']
+      platformapp = parameters['datasource']['platformapp']
 
-    if application.present?
-      @mcapplication = MCerebrumApplication.where(identifier: application['id'], applicationtype: application['type'], metadata: [application['metadata']])
-                           .first_or_create(:identifier => application['id'], :applicationtype => application['type'], :metadata => application['metadata'])
+      if application.present?
+        @mcapplication = MCerebrumApplication.where(identifier: application['id'], applicationtype: application['type'], metadata: [application['metadata']])
+                             .first_or_create(:identifier => application['id'], :applicationtype => application['type'], :metadata => application['metadata'])
+      else
+        @mcapplication = MCerebrumApplication.where(identifier: nil, applicationtype: nil).first_or_create(:identifier => nil, :applicationtype => nil)
+      end
+
+      if platform.present?
+        @mcplatform = MCerebrumPlatform.where(identifier: platform['id'], platformtype: platform['type'], metadata: [platform['metadata']])
+                          .first_or_create(:identifier => platform['id'], :platformtype => platform['type'], :metadata => platform['metadata'])
+      else
+        @mcplatform = MCerebrumPlatform.where(identifier: nil, platformtype: nil).first_or_create(:identifier => nil, :platformtype => nil)
+      end
+
+      if platformapp.present?
+        @mcplatformapp = MCerebrumPlatformApp.where(identifier: platformapp['id'], platformapptype: platformapp['type'], metadata: [platformapp['metadata']])
+                             .first_or_create(:identifier => platformapp['id'], :platformapptype => platformapp['type'], :metadata => platformapp['metadata'])
+      else
+        @mcplatformapp = MCerebrumPlatformApp.where(identifier: nil, platformapptype: nil).first_or_create(:identifier => nil, :platformapptype => nil)
+      end
+
+      ds = parameters['datasource']
+
+      if ds['dataDescriptors'].nil?
+        ds['dataDescriptors'] = []
+      end
+      if ds['metadata'].nil?
+        ds['metadata'] = {}
+      end
+
+      @datasource = Datasource.exists(ds['id'],
+                                      ds['type'],
+                                      ds['dataDescriptors'].to_json,
+                                      ds['metadata'].to_json,
+                                      @mcapplication.id,
+                                      @mcplatform.id,
+                                      @mcplatformapp.id)
+                        .first_or_create(:identifier => ds['id'],
+                                         :datasourcetype => ds['type'],
+                                         :datadescriptor => ds['dataDescriptors'].to_json,
+                                         :metadata => ds['metadata'].to_json,
+                                         :m_cerebrum_application_id => @mcapplication.id,
+                                         :m_cerebrum_platform_id => @mcplatform.id,
+                                         :m_cerebrum_platform_app_id => @mcplatformapp.id
+                        )
+
+      @datastream = Datastream.where(participant_id: participant_id, datasource_id: @datasource.id).first_or_create(participant_id: participant_id, datasource_id: @datasource.id)
+
+      respond_to do |format|
+        msg = {:status => "ok", :message => 'Successfully loaded datasource', :datastream_id => @datastream.id.to_s}
+        logger.ap msg
+        format.json { render json: msg }
+      end
     else
-      @mcapplication = MCerebrumApplication.where(identifier: nil, applicationtype: nil).first_or_create(:identifier => nil, :applicationtype => nil)
+      respond_to do |format|
+        msg = {:status => "error", :message => 'Participant ID invalid'}
+        logger.ap msg
+        format.json { render json: msg }
+      end
     end
 
-    if platform.present?
-      @mcplatform = MCerebrumPlatform.where(identifier: platform['id'], platformtype: platform['type'], metadata: [platform['metadata']])
-                        .first_or_create(:identifier => platform['id'], :platformtype => platform['type'], :metadata => platform['metadata'])
-    else
-      @mcplatform = MCerebrumPlatform.where(identifier: nil, platformtype: nil).first_or_create(:identifier => nil, :platformtype => nil)
-    end
-
-    if platformapp.present?
-      @mcplatformapp = MCerebrumPlatformApp.where(identifier: platformapp['id'], platformapptype: platformapp['type'], metadata: [platformapp['metadata']])
-                           .first_or_create(:identifier => platformapp['id'], :platformapptype => platformapp['type'], :metadata => platformapp['metadata'])
-    else
-      @mcplatformapp = MCerebrumPlatformApp.where(identifier: nil, platformapptype: nil).first_or_create(:identifier => nil, :platformapptype => nil)
-    end
-
-    ds = parameters['datasource']
-
-    if ds['dataDescriptors'].nil?
-      ds['dataDescriptors'] = []
-    end
-    if ds['metadata'].nil?
-      ds['metadata'] = {}
-    end
-
-    @datasource = Datasource.exists(ds['id'],
-                                    ds['type'],
-                                    ds['dataDescriptors'].to_json,
-                                    ds['metadata'].to_json,
-                                    @mcapplication.id,
-                                    @mcplatform.id,
-                                    @mcplatformapp.id)
-                      .first_or_create(:identifier => ds['id'],
-                                       :datasourcetype => ds['type'],
-                                       :datadescriptor => ds['dataDescriptors'].to_json,
-                                       :metadata => ds['metadata'].to_json,
-                                       :m_cerebrum_application_id => @mcapplication.id,
-                                       :m_cerebrum_platform_id => @mcplatform.id,
-                                       :m_cerebrum_platform_app_id => @mcplatformapp.id
-                      )
-
-    @datastream = Datastream.where(participant_id: participant_id, datasource_id: @datasource.id).first_or_create(participant_id: participant_id, datasource_id: @datasource.id)
-
-    respond_to do |format|
-      msg = {:status => "ok", :message => 'Successfully loaded datasource', :datastream_id => @datastream.id.to_s}
-      logger.ap msg
-      format.json { render json: msg }
-    end
 
   end
 

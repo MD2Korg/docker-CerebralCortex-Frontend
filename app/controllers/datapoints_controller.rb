@@ -22,7 +22,7 @@ class DatapointsController < InheritedResources::Base
   def bulkload
     datastreamid = datapoint_params['datastream_id']
 
-    if params['data'].present?
+    if params['data'].present? and datastreamid.present?
       data = params['data'].map do |dp|
         p = {}
         p['datastream_id'] = datastreamid
