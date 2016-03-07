@@ -3,34 +3,23 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
 
 
-  resources :datapoints do
-    collection do
-      post :bulkload
-    end
-  end
+  # Explicit routing for data ingestion
+  post 'datapoints/bulkload', to: 'datapoints#bulkload'
 
-  resources :datasources do
-    collection do
-      post :register
-    end
-  end
+  post 'datasources/register', to: 'datasources#register'
 
-  resources :studies do
-    collection do
-      post :register_participant
-    end
-  end
+  post 'studies/register_participant', to: 'studies#register_participant'
 
-  # if Rails.env.development?
-  #   resources :m_cerebrum_applications
-  #   resources :datasources
-  #   resources :datapoints
-  #   resources :datastreams
-  #   resources :studies
-  #   resources :participants
-  #   resources :m_cerebrum_platform_apps
-  #   resources :m_cerebrum_platforms
-  # end
+  if Rails.env.development?
+    resources :m_cerebrum_applications
+    resources :datasources
+    resources :datapoints
+    resources :datastreams
+    resources :studies
+    resources :participants
+    resources :m_cerebrum_platform_apps
+    resources :m_cerebrum_platforms
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
