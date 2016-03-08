@@ -10,6 +10,9 @@ Rails.application.routes.draw do
 
   post 'studies/register_participant', to: 'studies#register_participant'
 
+  post 'studies', to: 'studies#create'
+  post 'participants', to: 'participants#create'
+
   if Rails.env.development?
     resources :m_cerebrum_applications
     resources :datasources
