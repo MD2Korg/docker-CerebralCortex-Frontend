@@ -35,15 +35,24 @@ ActiveAdmin.register Participant do
 
     panel "Datapoint counts" do
       table_for Datastream.where(participant_id: participant.id) do
+        column 'Datastream', :id do |ds|
+          link_to ds.id, admin_datastream_path(ds)
+        end
         column 'Datasource', :id do |ds|
-          Datastream.find_by_id(ds).datasource.display_name
+          link_to Datastream.find_by_id(ds).datasource.display_name, admin_datasource_path(Datastream.find_by_id(ds).datasource.id)
         end
 
-        column 'Data points', :id do |dsid|
-          Datapoint.where(datastream_id: dsid).count
+        column 'Past 15 minutes', :id do |dsid|
+          Datapoint.where(datastream_id: dsid, timestamp: (Time.now.utc-15.minutes)..(Time.now.utc)).count
         end
-        column 'Data points (current day)', :id do |dsid|
+        column 'Past 1 hour', :id do |dsid|
+          Datapoint.where(datastream_id: dsid, timestamp: (Time.now.utc-1.hours)..(Time.now.utc)).count
+        end
+        column 'Current Day', :id do |dsid|
           Datapoint.where(datastream_id: dsid, timestamp: (Time.now.at_beginning_of_day)..(Time.now.at_end_of_day)).count
+        end
+        column 'Total', :id do |dsid|
+          Datapoint.where(datastream_id: dsid).count
         end
       end
     end
