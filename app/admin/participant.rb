@@ -33,16 +33,18 @@ ActiveAdmin.register Participant do
     end
 
 
-    table_for Datastream.where(participant_id: participant.id) do
-      column 'Datasource', :id do |ds|
-        Datastream.find_by_id(ds).datasource.display_name
-      end
+    panel "Datapoint counts" do
+      table_for Datastream.where(participant_id: participant.id) do
+        column 'Datasource', :id do |ds|
+          Datastream.find_by_id(ds).datasource.display_name
+        end
 
-      column 'Data points', :id do |dsid|
-        Datapoint.where(datastream_id: dsid).count
-      end
-      column 'Data points (current day)', :id do |dsid|
-        Datapoint.where(datastream_id: dsid, timestamp: (Time.now.at_beginning_of_day)..(Time.now.at_end_of_day)).count
+        column 'Data points', :id do |dsid|
+          Datapoint.where(datastream_id: dsid).count
+        end
+        column 'Data points (current day)', :id do |dsid|
+          Datapoint.where(datastream_id: dsid, timestamp: (Time.now.at_beginning_of_day)..(Time.now.at_end_of_day)).count
+        end
       end
     end
 
