@@ -63,7 +63,9 @@ ActiveAdmin.register Participant do
 
   sidebar "Study details", only: :show do
     table_for participant.studies do
-      column :identifier
+      column 'Identifier' do |id|
+        link_to id.identifier, admin_study_path(id.id)
+      end
       column :name
     end
   end
