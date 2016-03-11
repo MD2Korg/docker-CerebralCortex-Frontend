@@ -173,6 +173,8 @@ ActiveAdmin.register Study do
       end
     end
 
+    # render partial: 'participants'
+
     active_admin_comments
   end
 
