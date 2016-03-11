@@ -35,6 +35,11 @@ gem 'annotate'
 
 gem 'rspec'
 
+# Visualization
+gem 'highcharts-rails'
+gem 'chartkick'
+gem 'groupdate'
+
 
 # Require awesome print to pretty print ruby objects
 gem 'awesome_print', require: "ap"

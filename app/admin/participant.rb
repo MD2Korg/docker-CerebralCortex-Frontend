@@ -57,6 +57,8 @@ ActiveAdmin.register Participant do
       end
     end
 
+    # render participant
+    render 'participant', {participant: participant}
 
     active_admin_comments
   end

@@ -1,0 +1,11 @@
+<div style="width: 100%; text-align: center"><h1>All Participant Data</h1></div>
+<%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+
+<div style="width: 100%; text-align: center"><h3>Day</h3></div>
+<%= line_chart Datapoint.group_by_day(:timestamp, time_zone: "Central Time (US & Canada)", day_start: 6).count %>
+
+<div style="width: 100%; text-align: center"><h3>Hour</h3></div>
+<%= line_chart Datapoint.group_by_hour(:timestamp, time_zone: "Central Time (US & Canada)", day_start: 6).count %>
+
+<div style="width: 100%; text-align: center"><h3>Minute</h3></div>
+<%= line_chart Datapoint.group_by_minute(:timestamp, time_zone: "Central Time (US & Canada)", day_start: 6).count %>
