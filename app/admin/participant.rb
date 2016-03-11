@@ -43,16 +43,16 @@ ActiveAdmin.register Participant do
         end
 
         column 'Past 15 minutes', :id do |dsid|
-          Datapoint.where(datastream_id: dsid, timestamp: (Time.now.utc-15.minutes)..(Time.now.utc)).count
+          Datapoint.datastream(dsid).where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc)).count
         end
         column 'Past 1 hour', :id do |dsid|
-          Datapoint.where(datastream_id: dsid, timestamp: (Time.now.utc-1.hours)..(Time.now.utc)).count
+          Datapoint.datastream(dsid).where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc)).count
         end
         column 'Current Day', :id do |dsid|
-          Datapoint.where(datastream_id: dsid, timestamp: (Time.now.at_beginning_of_day)..(Time.now.at_end_of_day)).count
+          Datapoint.datastream(dsid).where(timestamp: (Time.now.at_beginning_of_day)..(Time.now.at_end_of_day)).count
         end
         column 'Total', :id do |dsid|
-          Datapoint.where(datastream_id: dsid).count
+          Datapoint.datastream(dsid).count
         end
       end
     end

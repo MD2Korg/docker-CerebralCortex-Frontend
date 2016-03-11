@@ -36,6 +36,8 @@ class Datasource < ActiveRecord::Base
     self.datasourcetype.to_s + " (" + self.identifier.to_s + ") [" + self.id.to_s + ']'
   end
 
+  scope :query_status, -> (datasource_type, plat_type) { where(datasourcetype: datasource_type, m_cerebrum_platform_id: MCerebrumPlatform.where(platformtype: plat_type)) }
+
   def self.exists(id, type, dd, meta, mcapp, mcplat, mcplatapp)
     where(identifier: id,
           datasourcetype: type,

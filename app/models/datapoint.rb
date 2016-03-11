@@ -21,4 +21,8 @@
 
 class Datapoint < ActiveRecord::Base
   belongs_to :datastream
+
+  scope :datastream, -> (datastream) { where datastream: datastream }
+  scope :datastreams, -> (datastreams) { joins(:datastream).where('datastreams.participant_id IN (?)', datastreams) }
+  scope :participant, -> (participant) { joins(:datastream).where('datastreams.participant_id = ?', participant) }
 end
