@@ -119,8 +119,8 @@ ActiveAdmin.register Study do
           (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
         end
         column 'Wrist (AS)', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST))).where("sample ->> 0 = ' 0 '").count
-          bad=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status(' STATUS ', ' AUTOSENSE_WRIST))).where("sample ->> 0 != '0'").count
+          good=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST'))).where("sample ->> 0 = ' 0 '").count
+          bad=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status(' STATUS ', 'AUTOSENSE_WRIST'))).where("sample ->> 0 != '0'").count
           (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
         end
         column 'Wrist (MS)', :id do |i|
