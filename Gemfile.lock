@@ -277,6 +277,7 @@ DEPENDENCIES
   passenger (>= 5.0.25)
   pg (>= 0.15)
   rails (= 4.2.5.1)
+  rake
   rspec
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
