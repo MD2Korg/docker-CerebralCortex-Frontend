@@ -3,7 +3,11 @@ language: ruby
 rvm:
   - 2.2.0
 
-cache: bundler
+cache:
+ - bundler
+
+services:
+ - postgresql
 
 os:
   - linux
@@ -16,6 +20,10 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.m2/"
+
+
+before_script:
+  - psql -c 'create database cerebralcortex_test;' -U postgres
 
 notifications:
   slack:
