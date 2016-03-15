@@ -1,39 +1,26 @@
 language: ruby
-
 rvm:
-  - 2.2.0
-
-cache:
- - bundler
-
-services:
- - postgresql
-
-os:
-  - linux
-
-before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-
+- 2.2.0
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.m2/"
-
-
+services:
+- postgresql
+os:
+- linux
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 before_script:
-  - psql -c 'create database cerebralcortex_test;' -U postgres
-
-
+- psql -c 'create database cerebralcortex_test;' -U postgres
 script:
-  - RAILS_ENV=test bundle exec rake db:migrate --trace
-  - bundle exec rake db:test:prepare
-  - bundle exec rake test:all:db
-
+- RAILS_ENV=test bundle exec rake db:migrate --trace
+- bundle exec rake db:test:prepare
+- bundle exec rake test:all:db
 notifications:
   slack:
-    secure: drSaLEsi+xlUePocfcDTLO9S/5XSBsnR6h7OzPhU4xsO+mBjH3qb93Qe4Jwzz9IZQ0UFzDcmu7ObHOksd6fDgvnIcmznowuABs7QFSF5dodF3eXuF/NJc5J3SqptrOZhlPhGQJcan8siBpLw5z+UBal9ORQPJ8e0SN2bxvRH30GzOlaBOrS0w9hGmtoIY/c8ZIjxGn7BK+b7qL6pNqD4tTg3BImh4Q8Q0icjlT/Pe4kq9pJuYP+Ph4B6THE5PY6W5kmaPSZT2wk72tbNa+1f0lxkO106+Fi4X/qEf6BNQ/2ufUi8cGyjYhu8ZRfGEQVwmwtk0goZvPRyxzHx94tc0/utmW+ZvEEdXOTfs1cE84xGvsYOmoMaMacJC0DPSRTJ269LnmUlTYZoZPyEaqEJp0vFLnS7ZwYcYBzEQ/coS1zKOEWX5a29ijvCOxeFGWF9NcEvaGfpoP/RiLJXjguKfrQLQiek+xkzmubSRWpP9LFoqtXwVMxle/zi/99Ry02nvmEUSK3BbAM57LBnrT+0lYDC/ocxTpQ3Gvd52qFoZBzb8Fshu2+3UYCSCHROkOdHtBmBvRKE4LiTz8/6xtzeL1n+1RSrbN13tbk01gkNIHagSLWUildtFkvok2pJXawslE88ZhRzOOK8ViWFenbhca6sPfvBebXccTJKnzi4GQc=
+    secure: jM2mpNOR8BoyZupDqZvqPGiDdVI9dxAmLPjPlEoox20vo5w4kQoMwgsGDLk+Q5/d/EW7rP2NhKmvUT9Av4VeDJnsPKCqRDdHuglmQmqNxHvjdFqwM9n/iszj2j2hw1+uaPGR0XPhdvQl1g+uA+n6OdjtQn0n+zaqKGcIhoz/JLRcWCCYmurNNwO4hwUQvurTRt7Zo0UoEAt/FumcJpv/C1IWpGUU50UYGCDChIUNeWkX6AKBUkrXLobF61O6OohdxGryyOJTOod7sPK+ZLdPo9LI4db7DllHMmLnXlLcAcsipHFaD8tC9jZE1UFemZloAQ+NqKBtJl/pylcpRvIaV8/Pntb675x/LQEgogcj0aWF4fJ+kY0kTnw4dSspP8P4g1hhcpBDZ8DQ4To3w7ZD6k0se5U0baVSfS1UbZLIEtSP1F2R1InJKIkeTgVZ4Ppy0lZGFJ087IgkZb1oSSYexvR8CncgqiJlxRgPFgXk5ui3tt8nKclWBP5iuETJjlpek7cUlqu6TdrqGtfz+oMsDkOSjyDLJFpz07qmD0DY4+lu3APsJhSMxVn3A5PcYUmyxc5MHSprRyGfIDKw/y9a7bOPEZ0xE1q6b2XFhb6G/4ukvz5JXZA4IvLsXzJDxLU0+GCP6kg78m/Xh48atbijvCz2Tfg0JwaL3PRVHvPQ6sA=
     on_success: change  # options: [always|never|change] default: always
     on_failure: always  # options: [always|never|change] default: always
     on_start: false     # default: false
