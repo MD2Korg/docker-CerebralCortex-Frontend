@@ -40,7 +40,7 @@ class DatapointsController < InheritedResources::Base
 
       respond_to do |format|
         msg = {:status => "ok", :message => 'Successfully loaded datapoints', :count => params['data'].count}
-        # logger.ap msg
+        logger.ap msg
         format.json { render json: msg }
       end
     else
