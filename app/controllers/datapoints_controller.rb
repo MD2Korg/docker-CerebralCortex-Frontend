@@ -32,7 +32,7 @@ class DatapointsController < InheritedResources::Base
         params['data'].map do |dp|
           values.push [datastreamid, Time.at(datapoint_bulk_params(dp)['dateTime']/1000.0).utc.to_datetime, datapoint_bulk_params(dp)['sample'], datapoint_bulk_params(dp)['offset']/3600000.0]
         end
-        logger.ap "Array timing: " + (Time.now-st).to_s
+        logger.ap "Array timing: " + (Time.now-st).to_s, :warn
 
         Datapoint.import columns, values, validate: false
       end
