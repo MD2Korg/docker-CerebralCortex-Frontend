@@ -37,6 +37,7 @@ gem 'rspec'
 
 gem 'degzipper'
 
+
 # Visualization
 gem 'highcharts-rails'
 gem 'chartkick'
