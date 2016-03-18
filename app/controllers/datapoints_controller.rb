@@ -26,16 +26,18 @@ class DatapointsController < InheritedResources::Base
 
       Datapoint.transaction do
 
-        data = params['data'].map do |dp|
-          p = {}
-          p['datastream_id'] = datastreamid
-          p['sample'] = datapoint_bulk_params(dp)['sample']
-          p['timestamp'] = Time.at(datapoint_bulk_params(dp)['dateTime']/1000.0).utc.to_datetime
-          p['offset'] = datapoint_bulk_params(dp)['offset']/3600000.0
-          Datapoint.new(p)
+        columns = [:datastream_id, :timestamp, :sample, :offset]
+        values = []
+        params['data'].map do |dp|
+          values.push [datastreamid, Time.at(datapoint_bulk_params(dp)['dateTime']/1000.0).utc.to_datetime, datapoint_bulk_params(dp)['sample'], datapoint_bulk_params(dp)['offset']/3600000.0]
+          # p['datastream_id'] = datastreamid
+          # p['sample'] = datapoint_bulk_params(dp)['sample']
+          # p['timestamp'] = Time.at(datapoint_bulk_params(dp)['dateTime']/1000.0).utc.to_datetime
+          # p['offset'] = datapoint_bulk_params(dp)['offset']/3600000.0
+          # Datapoint.new(p)
         end
 
-        Datapoint.import data, validate: false
+        Datapoint.import columns, values, validate: false
       end
 
       respond_to do |format|
