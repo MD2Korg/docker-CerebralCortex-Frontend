@@ -25,4 +25,5 @@ class Datapoint < ActiveRecord::Base
   scope :datastream, -> (datastream) { where datastream: datastream }
   scope :datastreams, -> (datastreams) { joins(:datastream).where('datastreams.participant_id IN (?)', datastreams) }
   scope :participant, -> (participant) { joins(:datastream).where('datastreams.participant_id = ?', participant) }
+  scope :last_window, -> (last_window) { where timestamp: last_window }
 end

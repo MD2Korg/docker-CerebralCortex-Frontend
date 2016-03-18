@@ -42,9 +42,6 @@ ActiveAdmin.register Participant do
           link_to Datastream.find_by_id(ds).datasource.display_name, admin_datasource_path(Datastream.find_by_id(ds).datasource.id)
         end
 
-        column 'Past 15 minutes', :id do |dsid|
-          Datapoint.datastream(dsid).where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc)).count
-        end
         column 'Past 1 hour', :id do |dsid|
           Datapoint.datastream(dsid).where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc)).count
         end

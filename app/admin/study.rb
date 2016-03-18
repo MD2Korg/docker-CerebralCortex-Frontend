@@ -34,40 +34,6 @@ ActiveAdmin.register Study do
       row :updated_at
     end
 
-    panel "15 Minute Window" do
-      table_for study.participants do
-        column 'Identifier' do |i|
-          link_to i.identifier, admin_participant_path(i.id)
-        end
-
-        column 'RIP', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
-        end
-        column 'ECG', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 1 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 1 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
-        end
-        column 'Wrist (AS)', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
-        end
-        column 'Wrist (MS)', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
-        end
-
-        column 'EMA', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-15.minutes)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY'))).count
-          good
-        end
-      end
-    end
-
     panel "1 Hour Window" do
       table_for study.participants do
         column 'Identifier' do |i|
@@ -75,29 +41,43 @@ ActiveAdmin.register Study do
         end
 
         column 'RIP', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.last_window((Time.now.utc-1.hours)..(Time.now.utc)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST')))
+          good=ds.where("sample ->> 0 = '0'").count
+          bad=ds.where("sample ->> 0 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
         column 'ECG', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 1 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 1 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.last_window((Time.now.utc-1.hours)..(Time.now.utc)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST')))
+          good=ds.where("sample ->> 1 = '0'").count
+          bad=ds.where("sample ->> 1 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
         column 'Wrist (AS)', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.last_window((Time.now.utc-1.hours)..(Time.now.utc)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST')))
+          good=ds.where("sample ->> 0 = '0'").count
+          bad=ds.where("sample ->> 0 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
         column 'Wrist (MS)', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.last_window((Time.now.utc-1.hours)..(Time.now.utc)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND')))
+          good=ds.where("sample ->> 0 = '0'").count
+          bad=ds.where("sample ->> 0 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
 
         column 'EMA', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.utc-1.hours)..(Time.now.utc), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY'))).count
-          good
+          ds = Datapoint.last_window((Time.now.utc-1.hours)..(Time.now.utc)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY')))
+          if ds.count > 0
+            ds.count
+          end
         end
       end
     end
@@ -109,29 +89,43 @@ ActiveAdmin.register Study do
         end
 
         column 'RIP', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST')))
+          good=ds.where("sample ->> 0 = '0'").count
+          bad=ds.where("sample ->> 0 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
         column 'ECG', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 1 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 1 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST')))
+          good=ds.where("sample ->> 1 = '0'").count
+          bad=ds.where("sample ->> 1 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
         column 'Wrist (AS)', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST'))).where("sample ->> 0 = ' 0 '").count
-          bad=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status(' STATUS ', 'AUTOSENSE_WRIST'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST')))
+          good=ds.where("sample ->> 0 = '0'").count
+          bad=ds.where("sample ->> 0 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
         column 'Wrist (MS)', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND')))
+          good=ds.where("sample ->> 0 = '0'").count
+          bad=ds.where("sample ->> 0 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
 
         column 'EMA', :id do |i|
-          good=Datapoint.where(timestamp: (Time.now.beginning_of_day)..(Time.now.end_of_day), datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY'))).count
-          good
+          ds = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day)).where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY')))
+          if ds.count > 0
+            ds.count
+          end
         end
       end
     end
@@ -143,32 +137,50 @@ ActiveAdmin.register Study do
         end
 
         column 'RIP', :id do |i|
-          good=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST')))
+
+          good=ds.where("sample ->> 0 = '0'").count
+          bad=ds.where("sample ->> 0 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
 
         column 'ECG', :id do |i|
-          good=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 1 = '0'").count
-          bad=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST'))).where("sample ->> 1 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_CHEST')))
+
+          good=ds.where("sample ->> 1 = '0'").count
+          bad=ds.where("sample ->> 1 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
 
         column 'Wrist (AS)', :id do |i|
-          good=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'AUTOSENSE_WRIST')))
+
+          good=ds.where("sample ->> 0 = '0'").count
+          bad=ds.where("sample ->> 0 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
 
         column 'Wrist (MS)', :id do |i|
-          good=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND'))).where("sample ->> 0 = '0'").count
-          bad=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND'))).where("sample ->> 0 != '0'").count
-          (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_status('STATUS', 'MICROSOFT_BAND')))
+
+          good=ds.where("sample ->> 0 = '0'").count
+          bad=ds.where("sample ->> 0 != '0'").count
+          if (good+bad) > 0
+            (good.to_f/(good+bad)).round(3).to_s + ' (' + good.to_s + '/' + (good+bad).to_s + ')'
+          end
         end
 
         column 'EMA', :id do |i|
-          good=Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY'))).count
-          good
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY')))
+          if ds.count > 0
+            ds.count
+          end
         end
       end
     end

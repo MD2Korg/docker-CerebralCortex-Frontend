@@ -1,9 +1,9 @@
 <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
 <div style="width: 100%; text-align: center"><h3>Day</h3></div>
-<%= line_chart Datapoint.datastreams(@study.participants.ids).group_by_day(:timestamp, time_zone: "Central Time (US & Canada)").count %>
+<%= line_chart Datapoint.datastreams(@study.participants.ids).where('datapoints.timestamp > ?', Time.now-30.days).group_by_day(:timestamp, time_zone: "Central Time (US & Canada)").count %>
 
 <div style="width: 100%; text-align: center"><h3>Hour</h3></div>
-<%= line_chart Datapoint.datastreams(@study.participants.ids).group_by_hour(:timestamp, time_zone: "Central Time (US & Canada)").count %>
+<%= line_chart Datapoint.datastreams(@study.participants.ids).where('datapoints.timestamp > ?', Time.now-7.days).group_by_hour(:timestamp, time_zone: "Central Time (US & Canada)").count %>
 
 <div style="width: 100%; text-align: center"><h3>Minute</h3></div>
-<%= line_chart Datapoint.datastreams(@study.participants.ids).group_by_minute(:timestamp, time_zone: "Central Time (US & Canada)").count %>
+<%= line_chart Datapoint.datastreams(@study.participants.ids).where('datapoints.timestamp > ?', Time.now-1.days).group_by_minute(:timestamp, time_zone: "Central Time (US & Canada)").count %>

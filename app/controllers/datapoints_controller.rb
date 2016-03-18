@@ -51,7 +51,6 @@ class DatapointsController < InheritedResources::Base
       end
     end
 
-
   end
 
   private
