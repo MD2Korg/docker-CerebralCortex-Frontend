@@ -21,21 +21,21 @@ class DatapointsController < InheritedResources::Base
 
   def bulkload
     datastreamid = datapoint_params['datastream_id']
+    columns = [:datastream_id, :timestamp, :sample, :offset]
 
     if params['data'].present? and datastreamid.present?
-
       st = Time.now
+
+      values = []
+      params['data'].map do |dp|
+        values.push [datastreamid, Time.at(datapoint_bulk_params(dp)['dateTime']/1000.0).utc.to_datetime, datapoint_bulk_params(dp)['sample'], datapoint_bulk_params(dp)['offset']/3600000.0]
+      end
+      logger.ap "Array timing: " + (Time.now-st).to_s, :warn
+
       Datapoint.transaction do
-
-        columns = [:datastream_id, :timestamp, :sample, :offset]
-        values = []
-        params['data'].map do |dp|
-          values.push [datastreamid, Time.at(datapoint_bulk_params(dp)['dateTime']/1000.0).utc.to_datetime, datapoint_bulk_params(dp)['sample'], datapoint_bulk_params(dp)['offset']/3600000.0]
-        end
-        logger.ap "Array timing: " + (Time.now-st).to_s, :warn
-
         Datapoint.import columns, values, validate: false
       end
+
       logger.ap "Insert timing: " + (Time.now-st).to_s, :warn
 
 

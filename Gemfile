@@ -6,7 +6,7 @@ gem 'rails', '4.2.5.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.15'
 
-gem 'activerecord-import', '~> 0.10.0'
+gem 'activerecord-import', '~> 0.12.0'
 
 
 # Use SCSS for stylesheets
