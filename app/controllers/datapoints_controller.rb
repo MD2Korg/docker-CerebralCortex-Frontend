@@ -53,6 +53,7 @@ class DatapointsController < InheritedResources::Base
 
   end
 
+
   private
   def datapoint_bulk_params(my_params)
     my_params.permit!
