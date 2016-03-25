@@ -13,9 +13,6 @@ ActiveAdmin.register Study do
 #   permitted
 # end
 
-
-  includes :study, :participant
-
   permit_params :identifier,
                 :name
 
