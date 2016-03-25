@@ -39,7 +39,8 @@ ActiveAdmin.register Participant do
           link_to ds.id, admin_datastream_path(ds)
         end
         column 'Datasource', :id do |ds|
-          link_to Datastream.find_by_id(ds).datasource.display_name, admin_datasource_path(Datastream.find_by_id(ds).datasource.id)
+          datas = Datastream.find_by_id(ds)
+          link_to datas.datasource.display_name + datas.datasource.m_cerebrum_application.display_name, admin_datasource_path(Datastream.find_by_id(ds).datasource.id)
         end
 
         column 'Past 1 hour', :id do |dsid|
