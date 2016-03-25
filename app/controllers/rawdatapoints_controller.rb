@@ -3,9 +3,9 @@ class RawdatapointsController < InheritedResources::Base
 
   @@cequel_config = YAML.load_file("#{Rails.root}/config/cequel.yml")[Rails.env]
 
-  @@cluster = Cassandra.cluster(compression: :lz4)
+  @@cluster = Cassandra.cluster(compression: :lz4, hosts: @@cequel_config['hosts'], username: @@cequel_config['username'], password: @@cequel_config['password'])
   @@keyspace = @@cequel_config['keyspace']
-  @@session = @@cluster.connect(@@keyspace, hosts: @@cequel_config['hosts'])
+  @@session = @@cluster.connect(@@keyspace)
   @@statement = @@session.prepare('INSERT INTO rawdatapoints (datastream, day, dateTime, sample, offset) VALUES (?,?,?,?,?)')
 
 
