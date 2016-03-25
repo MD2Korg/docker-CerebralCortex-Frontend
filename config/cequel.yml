@@ -1,14 +1,16 @@
 development:
-  host:
+  hosts:
     - '127.0.0.1'
   port: 9042
+  username: 'dev'
+  password: 'dev'
   keyspace: cerebralcortex_dev
   max_retries: 3
   retry_delay: 0.5
   newrelic: false
 
 test:
-  host:
+  hosts:
     - '127.0.0.1'
   port: 9042
   keyspace: cerebralcortex_test
@@ -20,7 +22,7 @@ production:
   hosts:
     - 'tatooine10dot'
     - 'alderaan10dot'
-    - 'tatooine10dot'
+    - 'yavin10dot'
   port: 9042
   keyspace: cerebralcortex_production
   username: 'cerebralcortex'
