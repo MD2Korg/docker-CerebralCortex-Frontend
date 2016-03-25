@@ -5,7 +5,7 @@ class RawdatapointsController < InheritedResources::Base
 
   @@cluster = Cassandra.cluster(compression: :lz4)
   @@keyspace = @@cequel_config['keyspace']
-  @@session = @@cluster.connect(@@keyspace, hosts=@@cequel_config['hosts'])
+  @@session = @@cluster.connect(@@keyspace, hosts: @@cequel_config['hosts'])
   @@statement = @@session.prepare('INSERT INTO rawdatapoints (datastream, day, dateTime, sample, offset) VALUES (?,?,?,?,?)')
 
 
