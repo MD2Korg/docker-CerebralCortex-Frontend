@@ -24,9 +24,9 @@ class RawdatapointsController < InheritedResources::Base
 
       if params['data'].present?
         st = Time.now
-        futures = @@session.execute(@@statement, arguments: [@@generator.at(Time.now().utc.to_f), params['data'].to_s])
+        futures = @@session.execute_async(@@statement, arguments: [@@generator.at(Time.now().utc.to_f), params['data'].to_s])
         logger.ap "Batch Array timing: " + (Time.now-st).to_s, :warn
-        # futures.join
+        futures.join
         logger.ap "Batch Insert timing: " + (Time.now-st).to_s, :warn
 
 
