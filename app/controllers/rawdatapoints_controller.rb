@@ -1,39 +1,34 @@
 class RawdatapointsController < InheritedResources::Base
-  require 'cassandra'
+
+  @@instance = RawdatapointsController.new
+
+  def self.instance
+    @@instance
+  end
+
+  def initialize
+    require 'cassandra'
+    @@cequel_config = YAML.load_file("#{Rails.root}/config/cequel.yml")[Rails.env]
+
+    @@cluster = Cassandra.cluster(compression: :lz4, hosts: @@cequel_config['hosts'], username: @@cequel_config['username'], password: @@cequel_config['password'])
+    @@keyspace = @@cequel_config['keyspace']
+    @@session = @@cluster.connect(@@keyspace)
+    @@statement = @@session.prepare('INSERT INTO rawdatapointbuffers (id, data) VALUES (?, ?)')
+    @@generator = Cassandra::Uuid::Generator.new
+  end
 
   def bulkload
     datastreamid = rawdatapoint_params['datastream_id']
 
     if datastreamid.present? and Datastream.exists?(id: datastreamid)
 
-      columns = [:datastream_id, :timestamp, :sample, :offset]
-
       if params['data'].present?
+        st = Time.now
+        futures = @@session.execute(@@statement, arguments: [@@generator.at(Time.now().utc.to_f), params['data'].to_s])
+        logger.ap "Batch Array timing: " + (Time.now-st).to_s, :warn
+        # futures.join
+        logger.ap "Batch Insert timing: " + (Time.now-st).to_s, :warn
 
-        @cequel_config = YAML.load_file("#{Rails.root}/config/cequel.yml")[Rails.env]
-
-        @cluster = Cassandra.cluster(compression: :lz4, hosts: @cequel_config['hosts'], username: @cequel_config['username'], password: @cequel_config['password'])
-        @keyspace = @cequel_config['keyspace']
-        @session = @cluster.connect(@keyspace)
-        @statement = @session.prepare('INSERT INTO rawdatapoints (datastream, day, dateTime, sample, offset) VALUES (?,?,?,?,?)')
-
-
-        totalst = Time.now
-        params['data'].each_slice(100) do |subset|
-          st = Time.now
-          batch = @session.batch do |b|
-            # logger.ap subset.count
-            subset.each do |dp|
-              b.add(@statement, [datastreamid, Time.at(rawdatapoint_bulk_params(dp)['dateTime']/1000).utc.strftime('%Y%m%d'), rawdatapoint_bulk_params(dp)['dateTime'], rawdatapoint_bulk_params(dp)['sample'].to_s, rawdatapoint_bulk_params(dp)['offset']/3600000.0])
-            end
-            #logger.ap "Batch Array timing: " + (Time.now-st).to_s, :warn
-          end
-
-          @session.execute(batch)
-          #logger.ap "Batch Insert timing: " + (Time.now-st).to_s + ' Size(' + subset.count.to_s + ')', :warn
-        end
-
-        logger.ap "Total Insert timing: " + (Time.now-totalst).to_s, :warn
 
         respond_to do |format|
           msg = {:status => "ok", :message => 'Successfully loaded rawdatapoints', :count => params['data'].count}
