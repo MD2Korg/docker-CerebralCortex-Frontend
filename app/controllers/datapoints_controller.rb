@@ -62,7 +62,7 @@ class DatapointsController < InheritedResources::Base
       if params['data'].present?
 
         total_st = Time.now
-        params['data'].each_slice(10000) do |subset|
+        params['data'].each_slice(1000) do |subset|
           st = Time.now
           kafka_message = {:datastream_id => datastreamid, :data => subset}
           message = WaterDrop::Message.new('RAILS-bulkload', kafka_message.to_json)
