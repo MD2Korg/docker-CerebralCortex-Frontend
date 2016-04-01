@@ -60,10 +60,16 @@ class DatapointsController < InheritedResources::Base
     if datastreamid.present? and Datastream.exists?(id: datastreamid)
 
       if params['data'].present?
-        st = Time.now
-        message = WaterDrop::Message.new('RAILS-bulkload', datapoint_bulk_params(params).to_json)
-        message.send!
-        logger.ap "Kafka Message timing: " + (Time.now-st).to_s, :warn
+
+        total_st = Time.now
+        params['data'].each_slice(10000) do |subset|
+          st = Time.now
+          kafka_message = {:datastream_id => datastreamid, :data => subset}
+          message = WaterDrop::Message.new('RAILS-bulkload', kafka_message.to_json)
+          message.send!
+          logger.ap "Kafka Message timing: " + (Time.now-st).to_s
+        end
+        logger.ap "All Kafka Message timing: " + (Time.now-total_st).to_s, :warn
 
         respond_to do |format|
           msg = {:status => "ok", :message => 'Successfully sent rawdatapoints', :count => params['data'].count}
