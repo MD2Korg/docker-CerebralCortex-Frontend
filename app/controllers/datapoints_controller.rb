@@ -61,8 +61,8 @@ class DatapointsController < InheritedResources::Base
 
       if params['data'].present?
         st = Time.now
-        # message = WaterDrop::Message.new('RAILS-rawdata', rawdatapoint_params.to_json)
-        # message.send!
+        message = WaterDrop::Message.new('RAILS-bulkload', datapoint_bulk_params(params).to_json)
+        message.send!
         logger.ap "Kafka Message timing: " + (Time.now-st).to_s, :warn
 
         respond_to do |format|
