@@ -37,6 +37,8 @@ gem 'rspec'
 
 gem 'degzipper'
 
+gem 'waterdrop'
+
 
 # Visualization
 gem 'highcharts-rails'
@@ -44,8 +46,6 @@ gem 'chartkick'
 gem 'groupdate'
 
 
-gem 'cequel'
-gem 'cassandra-driver'
 gem 'lz4-ruby'
 
 # Require awesome print to pretty print ruby objects

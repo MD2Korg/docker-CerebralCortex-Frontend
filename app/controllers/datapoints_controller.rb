@@ -54,6 +54,38 @@ class DatapointsController < InheritedResources::Base
   end
 
 
+  def rawbulkload
+    datastreamid = datapoint_params['datastream_id']
+
+    if datastreamid.present? and Datastream.exists?(id: datastreamid)
+
+      if params['data'].present?
+        st = Time.now
+        # message = WaterDrop::Message.new('RAILS-rawdata', rawdatapoint_params.to_json)
+        # message.send!
+        logger.ap "Kafka Message timing: " + (Time.now-st).to_s, :warn
+
+        respond_to do |format|
+          msg = {:status => "ok", :message => 'Successfully sent rawdatapoints', :count => params['data'].count}
+          logger.ap msg, :warn
+          format.json { render json: msg }
+        end
+      else
+        respond_to do |format|
+          msg = {:status => "error", :message => 'No data points in array', :count => 0}
+          format.json { render json: msg }
+        end
+      end
+    else
+      respond_to do |format|
+        msg = {:status => "error", :message => 'Datastream not found', :count => 0}
+        format.json { render json: msg }
+      end
+    end
+
+  end
+
+
   private
   def datapoint_bulk_params(my_params)
     my_params.permit!

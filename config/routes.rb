@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   # Explicit routing for data ingestion
   post 'datapoints/bulkload', to: 'datapoints#bulkload'
-  post 'rawdatapoints/bulkload', to: 'rawdatapoints#bulkload'
+  post 'rawdatapoints/bulkload', to: 'datapoints#rawbulkload'
 
   post 'datasources/register', to: 'datasources#register'
 
@@ -14,12 +14,10 @@ Rails.application.routes.draw do
   post 'studies', to: 'studies#create'
   post 'participants', to: 'participants#create'
 
-
   if Rails.env.development?
     resources :m_cerebrum_applications
     resources :datasources
     resources :datapoints
-    resources :rawdatapoints
     resources :datastreams
     resources :studies
     resources :participants
