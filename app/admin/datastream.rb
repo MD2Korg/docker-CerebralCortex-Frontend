@@ -22,6 +22,11 @@ ActiveAdmin.register Datastream do
   index do
     selectable_column
     id_column
+
+    column "Details" do |i|
+      link_to "data", admin_datapoints_path(q: {datastream_id_eq: i.id})
+    end
+
     column "Participant" do |i|
       i.participant.display_name
     end

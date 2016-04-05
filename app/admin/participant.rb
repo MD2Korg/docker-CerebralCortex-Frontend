@@ -52,6 +52,11 @@ ActiveAdmin.register Participant do
         column 'Total', :id do |dsid|
           Datapoint.datastream(dsid).count
         end
+
+        column "Details", :id do |i|
+          link_to "data", admin_datapoints_path(q: {datastream_id_eq: i})
+        end
+
       end
     end
 

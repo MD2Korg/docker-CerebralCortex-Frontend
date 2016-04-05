@@ -39,6 +39,7 @@ gem 'degzipper'
 
 gem 'waterdrop'
 
+gem 'json'
 
 # Visualization
 gem 'highcharts-rails'

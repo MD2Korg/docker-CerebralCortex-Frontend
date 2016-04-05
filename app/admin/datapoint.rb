@@ -13,6 +13,8 @@ ActiveAdmin.register Datapoint do
 #   permitted
 # end
 
+  require 'json'
+
   permit_params :datastream_id,
                 :timestamp,
                 :sample
@@ -29,7 +31,11 @@ ActiveAdmin.register Datapoint do
     column "participant" do |i|
       i.datastream.participant.identifier.to_s + ' (' + i.datastream.participant_id.to_s + ')'
     end
+    # column 'Sample' do |datapoint|
+    #   JSON.pretty_generate(JSON.load(datapoint.sample))
+    # end
     column :sample
+
     actions
   end
 

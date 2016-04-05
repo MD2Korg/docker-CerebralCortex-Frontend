@@ -286,6 +286,7 @@ DEPENDENCIES
   highcharts-rails
   jbuilder (~> 2.0)
   jquery-rails
+  json
   lz4-ruby
   passenger (>= 5.0.25)
   pg (>= 0.15)
