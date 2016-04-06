@@ -34,7 +34,7 @@ ActiveAdmin.register Datapoint do
     # column 'Sample' do |datapoint|
     #   JSON.pretty_generate(JSON.load(datapoint.sample))
     # end
-    column :sample
+    column :sample, as: :text
 
     actions
   end
