@@ -23,6 +23,8 @@ ActiveAdmin.register Datapoint do
   remove_filter :datastream
   filter :datastream_id, as: :select, collection: -> { Datastream.all }
 
+  actions :all, except: [:update, :destroy, :edit]
+
   index do
     selectable_column
     id_column
@@ -31,23 +33,36 @@ ActiveAdmin.register Datapoint do
     column "participant" do |i|
       i.datastream.participant.identifier.to_s + ' (' + i.datastream.participant_id.to_s + ')'
     end
-    # column 'Sample' do |datapoint|
-    #   JSON.pretty_generate(JSON.load(datapoint.sample))
-    # end
-    column :sample, as: :text
+    column 'Sample' do |datapoint|
+      datapoint['sample'].to_json
+    end
 
     actions
   end
 
-  form do |f|
-    f.semantic_errors
-    f.inputs do
-      f.input :datastream_id
-      f.input :timestamp
-      f.input :sample, as: :text
+  show do
+    attributes_table do
+      row :id
+      row :timestamp
+      row :created_at
+      row :updated_at
+      row :datastream
+      row :sample do |s|
+        s['sample'].to_json
+      end
+      row :offset
     end
-    f.actions
   end
+
+# form do |f|
+#   f.semantic_errors
+#   f.inputs do
+#     f.input :datastream_id
+#     f.input :timestamp
+#     f.input :sample, as: :text
+#   end
+#   f.actions
+# end
 
 
 end
