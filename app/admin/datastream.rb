@@ -23,23 +23,23 @@ ActiveAdmin.register Datastream do
     selectable_column
     id_column
 
-    column "Details" do |i|
+    column 'Details' do |i|
       link_to "data", admin_datapoints_path(q: {datastream_id_eq: i.id})
     end
 
-    column "Participant" do |i|
+    column 'Participant' do |i|
       i.participant.display_name
     end
-    column "Datasource" do |i|
+    column 'Datasource' do |i|
       i.datasource.display_name
     end
-    column "Application" do |i|
+    column 'Application' do |i|
       i.datasource.m_cerebrum_application.display_name
     end
-    column "Platform" do |i|
+    column 'Platform' do |i|
       i.datasource.m_cerebrum_platform.display_name
     end
-    column "Platform App" do |i|
+    column 'Platform App' do |i|
       i.datasource.m_cerebrum_platform_app.display_name
     end
     column 'Count' do |ds|

@@ -33,7 +33,7 @@ ActiveAdmin.register Participant do
     end
 
 
-    panel "Datapoint counts" do
+    panel 'Datapoint counts' do
       table_for Datastream.where(participant_id: participant.id) do
         column 'Datastream', :id do |ds|
           link_to ds.id, admin_datastream_path(ds)
@@ -53,8 +53,8 @@ ActiveAdmin.register Participant do
           Datapoint.datastream(dsid).count
         end
 
-        column "Details", :id do |i|
-          link_to "data", admin_datapoints_path(q: {datastream_id_eq: i})
+        column 'Details', :id do |i|
+          link_to 'data', admin_datapoints_path(q: {datastream_id_eq: i})
         end
 
       end
@@ -65,7 +65,7 @@ ActiveAdmin.register Participant do
     active_admin_comments
   end
 
-  sidebar "Study details", only: :show do
+  sidebar 'Study details', only: :show do
     table_for participant.studies do
       column 'Identifier' do |id|
         link_to id.identifier, admin_study_path(id.id)

@@ -34,7 +34,7 @@ ActiveAdmin.register Study do
       row :updated_at
     end
 
-    panel "1 Hour Window" do
+    panel '1 Hour Window' do
       table_for study.participants do
         column 'Identifier' do |i|
           link_to i.identifier, admin_participant_path(i.id)
@@ -43,7 +43,7 @@ ActiveAdmin.register Study do
         datapoint_last_window = Datapoint.last_window((Time.now.utc-1.hours)..(Time.now.utc))
 
         column 'RIP', :id do |i|
-          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query("DATA_QUALITY", "RESPIRATION")))
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query('DATA_QUALITY', 'RESPIRATION')))
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
           if (good+bad) > 0
@@ -51,7 +51,7 @@ ActiveAdmin.register Study do
           end
         end
         column 'ECG', :id do |i|
-          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query("DATA_QUALITY", "ECG")))
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query('DATA_QUALITY', 'ECG')))
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
           if (good+bad) > 0
@@ -59,7 +59,7 @@ ActiveAdmin.register Study do
           end
         end
         column 'Wrist (L)', :id do |i|
-          ds =datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id("DATA_QUALITY", "ACCELEROMETER", "LEFT_WRIST")))
+          ds =datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id('DATA_QUALITY', 'ACCELEROMETER', 'LEFT_WRIST')))
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
           if (good+bad) > 0
@@ -67,7 +67,7 @@ ActiveAdmin.register Study do
           end
         end
         column 'Wrist (R)', :id do |i|
-          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id("DATA_QUALITY", "ACCELEROMETER", "RIGHT_WRIST")))
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id('DATA_QUALITY', 'ACCELEROMETER', 'RIGHT_WRIST')))
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
           if (good+bad) > 0
@@ -84,7 +84,7 @@ ActiveAdmin.register Study do
       end
     end
 
-    panel "Current Day" do
+    panel 'Current Day' do
       table_for study.participants do
         column 'Identifier' do |i|
           link_to i.identifier, admin_participant_path(i.id)
@@ -92,7 +92,7 @@ ActiveAdmin.register Study do
 
         datapoint_last_window = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day))
         column 'RIP', :id do |i|
-          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query("DATA_QUALITY", "RESPIRATION")))
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query('DATA_QUALITY', 'RESPIRATION')))
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
           if (good+bad) > 0
@@ -100,7 +100,7 @@ ActiveAdmin.register Study do
           end
         end
         column 'ECG', :id do |i|
-          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query("DATA_QUALITY", "ECG")))
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query('DATA_QUALITY', 'ECG')))
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
           if (good+bad) > 0
@@ -108,7 +108,7 @@ ActiveAdmin.register Study do
           end
         end
         column 'Wrist (L)', :id do |i|
-          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id("DATA_QUALITY", "ACCELEROMETER", "LEFT_WRIST")))
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id('DATA_QUALITY', 'ACCELEROMETER', 'LEFT_WRIST')))
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
           if (good+bad) > 0
@@ -116,7 +116,7 @@ ActiveAdmin.register Study do
           end
         end
         column 'Wrist (R)', :id do |i|
-          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id("DATA_QUALITY", "ACCELEROMETER", "RIGHT_WRIST")))
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id('DATA_QUALITY', 'ACCELEROMETER', 'RIGHT_WRIST')))
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
           if (good+bad) > 0
@@ -133,14 +133,14 @@ ActiveAdmin.register Study do
       end
     end
 
-    panel "All Data" do
+    panel 'All Data' do
       table_for study.participants do
         column 'Identifier' do |i|
           link_to i.identifier, admin_participant_path(i.id)
         end
 
         column 'RIP', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query("DATA_QUALITY", "RESPIRATION")))
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query('DATA_QUALITY', 'RESPIRATION')))
 
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
@@ -150,7 +150,7 @@ ActiveAdmin.register Study do
         end
 
         column 'ECG', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query("DATA_QUALITY", "ECG")))
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query('DATA_QUALITY', 'ECG')))
 
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
@@ -160,7 +160,7 @@ ActiveAdmin.register Study do
         end
 
         column 'Wrist (L)', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id("DATA_QUALITY", "ACCELEROMETER", "LEFT_WRIST")))
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id('DATA_QUALITY', 'ACCELEROMETER', 'LEFT_WRIST')))
 
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
@@ -170,7 +170,7 @@ ActiveAdmin.register Study do
         end
 
         column 'Wrist (R)', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id("DATA_QUALITY", "ACCELEROMETER", "RIGHT_WRIST")))
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.query_plat_id('DATA_QUALITY', 'ACCELEROMETER', 'RIGHT_WRIST')))
 
           good=ds.where("sample ->> 0 = '0'").count
           bad=ds.where("sample ->> 0 != '0'").count
@@ -180,14 +180,14 @@ ActiveAdmin.register Study do
         end
 
         column 'EMA', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: "SURVEY")))
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY')))
           if ds.count > 0
             ds.count
           end
         end
 
         column 'NOTIFICATIONS (O/D/T)', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: "NOTIFICATION_ACKNOWLEDGE")))
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'NOTIFICATION_ACKNOWLEDGE')))
           ok = ds.where("sample -> 0 ->> 'status' = 'OK'").count
           delay = ds.where("sample -> 0 ->> 'status' = 'DELAY'").count
           timeout = ds.where("sample -> 0 ->> 'status' = 'TIMEOUT'").count
@@ -203,7 +203,7 @@ ActiveAdmin.register Study do
     active_admin_comments
   end
 
-  sidebar "Participant details", only: :show do
+  sidebar 'Participant details', only: :show do
     table_for study.participants do
       column 'ID' do |id|
         link_to id.id, admin_participant_path(id.id)

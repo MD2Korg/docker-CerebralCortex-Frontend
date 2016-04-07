@@ -34,7 +34,7 @@ class StudiesController < InheritedResources::Base
       end
     else
       respond_to do |format|
-        msg = {:status => "error", :message => 'Invalid participant or study id'}
+        msg = {:status => 'error', :message => 'Invalid participant or study id'}
         format.json { render json: msg }
       end
     end

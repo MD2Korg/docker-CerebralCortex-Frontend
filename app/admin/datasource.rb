@@ -31,13 +31,13 @@ ActiveAdmin.register Datasource do
     column :identifier
     column :datasourcetype
 
-    column "Application" do |i|
+    column :Application do |i|
       i.m_cerebrum_application.display_name
     end
-    column "Platform" do |i|
+    column :Platform do |i|
       i.m_cerebrum_platform.display_name
     end
-    column "Platform App" do |i|
+    column 'Platform App' do |i|
       i.m_cerebrum_platform_app.display_name
     end
     column 'Datastream count' do |ds|
@@ -70,7 +70,7 @@ ActiveAdmin.register Datasource do
     f.actions
   end
 
-  sidebar "Datasource", only: :show do
+  sidebar 'Datasource', only: :show do
     table_for Datastream.where(datasource_id: datasource.id) do
       column 'Participants', :participant_id do |pid|
         Participant.find_by_id(pid.participant_id).display_name

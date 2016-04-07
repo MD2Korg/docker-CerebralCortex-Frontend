@@ -16,6 +16,6 @@ class MCerebrumPlatform < ActiveRecord::Base
   scope :query, -> (platform_type, identifier) { where(platformtype: platform_type, identifier: identifier) }
   scope :query_identifier, -> (identifier) { where(identifier: identifier) }
   def display_name
-    self.platformtype.to_s + " (" + self.identifier.to_s + ") [" + self.id.to_s + ']'
+    self.platformtype.to_s + ' (' + self.identifier.to_s + ') [' + self.id.to_s + ']'
   end
 end

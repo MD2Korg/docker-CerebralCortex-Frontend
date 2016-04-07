@@ -30,7 +30,7 @@ ActiveAdmin.register Datapoint do
     id_column
     column :timestamp
     column :datastream_id
-    column "participant" do |i|
+    column 'participant' do |i|
       i.datastream.participant.identifier.to_s + ' (' + i.datastream.participant_id.to_s + ')'
     end
     column 'Sample' do |datapoint|

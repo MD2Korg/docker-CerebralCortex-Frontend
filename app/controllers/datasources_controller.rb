@@ -86,13 +86,13 @@ class DatasourcesController < InheritedResources::Base
       @datastream = Datastream.where(participant_id: participant_id, datasource_id: @datasource.id).first_or_create(participant_id: participant_id, datasource_id: @datasource.id)
 
       respond_to do |format|
-        msg = {:status => "ok", :message => 'Successfully loaded datasource', :datastream_id => @datastream.id.to_s}
+        msg = {:status => 'ok', :message => 'Successfully loaded datasource', :datastream_id => @datastream.id.to_s}
         logger.ap msg
         format.json { render json: msg }
       end
     else
       respond_to do |format|
-        msg = {:status => "error", :message => 'Participant ID invalid'}
+        msg = {:status => 'error', :message => 'Participant ID invalid'}
         logger.ap msg
         format.json { render json: msg }
       end
@@ -118,7 +118,7 @@ class DatasourcesController < InheritedResources::Base
   def deep_stringify_keys(hash)
     transform_hash(hash, :deep => true) { |hash, key, value|
       if value.instance_of? String
-        hash[key] = value.force_encoding("ISO-8859-1").encode("UTF-8")
+        hash[key] = value.force_encoding('ISO-8859-1').encode('UTF-8')
       else
         hash[key] = value
       end

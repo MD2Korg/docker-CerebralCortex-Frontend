@@ -30,23 +30,23 @@ class DatapointsController < InheritedResources::Base
       params['data'].map do |dp|
         values.push [datastreamid, Time.at(datapoint_bulk_params(dp)['dateTime']/1000.0).utc.to_datetime, datapoint_bulk_params(dp)['sample'], datapoint_bulk_params(dp)['offset']/3600000.0]
       end
-      logger.ap "Array timing: " + (Time.now-st).to_s, :warn
+      logger.ap 'Array timing: ' + (Time.now-st).to_s, :warn
 
       Datapoint.transaction do
         Datapoint.import columns, values, validate: false
       end
 
-      logger.ap "Insert timing: " + (Time.now-st).to_s, :warn
+      logger.ap 'Insert timing: ' + (Time.now-st).to_s, :warn
 
 
       respond_to do |format|
-        msg = {:status => "ok", :message => 'Successfully loaded datapoints', :count => params['data'].count}
+        msg = {:status => 'ok', :message => 'Successfully loaded datapoints', :count => params['data'].count}
         logger.ap msg, :warn
         format.json { render json: msg }
       end
     else
       respond_to do |format|
-        msg = {:status => "error", :message => 'No data points in array', :count => 0}
+        msg = {:status => 'error', :message => 'No data points in array', :count => 0}
         format.json { render json: msg }
       end
     end
@@ -67,24 +67,24 @@ class DatapointsController < InheritedResources::Base
           kafka_message = {:datastream_id => datastreamid, :data => subset}
           message = WaterDrop::Message.new('RAILS-bulkload', kafka_message.to_json)
           message.send!
-          logger.ap "Kafka Message timing: " + (Time.now-st).to_s
+          logger.ap 'Kafka Message timing: ' + (Time.now-st).to_s
         end
-        logger.ap "All Kafka Message timing: " + (Time.now-total_st).to_s, :warn
+        logger.ap 'All Kafka Message timing: ' + (Time.now-total_st).to_s, :warn
 
         respond_to do |format|
-          msg = {:status => "ok", :message => 'Successfully sent rawdatapoints', :count => params['data'].count}
+          msg = {:status => 'ok', :message => 'Successfully sent rawdatapoints', :count => params['data'].count}
           logger.ap msg, :warn
           format.json { render json: msg }
         end
       else
         respond_to do |format|
-          msg = {:status => "error", :message => 'No data points in array', :count => 0}
+          msg = {:status => 'error', :message => 'No data points in array', :count => 0}
           format.json { render json: msg }
         end
       end
     else
       respond_to do |format|
-        msg = {:status => "error", :message => 'Datastream not found', :count => 0}
+        msg = {:status => 'error', :message => 'Datastream not found', :count => 0}
         format.json { render json: msg }
       end
     end
