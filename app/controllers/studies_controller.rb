@@ -12,7 +12,7 @@ class StudiesController < InheritedResources::Base
 
   def create
     @study = Study.where(identifier: study_params['identifier']).first_or_create(study_params)
-
+    logger.ap @study, :warn
     respond_to do |format|
       if @study.save
         format.json { render json: @study }

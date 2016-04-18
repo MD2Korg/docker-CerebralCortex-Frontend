@@ -10,7 +10,7 @@ class ParticipantsController < InheritedResources::Base
 
   def create
     @participant = Participant.where(id: participant_params['id']).first_or_create(participant_params)
-
+    logger.ap @participant, :warn
     # @participant.save
     # respond_with  @participant
     respond_to do |format|
