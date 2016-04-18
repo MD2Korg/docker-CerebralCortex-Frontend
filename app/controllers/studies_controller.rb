@@ -11,8 +11,7 @@ class StudiesController < InheritedResources::Base
   end
 
   def create
-    @study = Study.where(identifier: study_params['identifier']).first_or_create(study_params)
-    logger.ap @study, :warn
+    @study = Study.where(identifier: study_params['identifier'], name: study_params['name']).first_or_create(study_params)
     respond_to do |format|
       if @study.save
         format.json { render json: @study }
@@ -23,7 +22,12 @@ class StudiesController < InheritedResources::Base
   def register_participant
     register_params = register_participant_params(params)
 
-    unless register_params['participant_id'].nil? or register_params['study_id'].nil?
+    if register_params['participant_id'].nil? or register_params['study_id'].nil?
+      respond_to do |format|
+        msg = {:status => 'error', :message => 'Invalid participant or study id'}
+        format.json { render json: msg }
+      end
+    else
       @participant_study = ParticipantStudy.where(participant_id: register_params['participant_id'], study_id: register_params['study_id'])
                                .first_or_create(:participant_id => register_params['participant_id'], :study_id => register_params['study_id'])
 
@@ -31,11 +35,6 @@ class StudiesController < InheritedResources::Base
         if @participant_study.save
           format.json { render json: @participant_study }
         end
-      end
-    else
-      respond_to do |format|
-        msg = {:status => 'error', :message => 'Invalid participant or study id'}
-        format.json { render json: msg }
       end
     end
 
