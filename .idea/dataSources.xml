@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="1676061663">
+  <component name="DataSourceManagerImpl" format="xml" hash="683407720">
     <data-source source="LOCAL" name="Rails docker-CerebralCortex-Frontend: development" uuid="8af06cf2-c448-4639-a1fa-d08c90d64d90">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>

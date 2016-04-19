@@ -39,6 +39,17 @@ class DatapointsController < InheritedResources::Base
       logger.ap 'Insert timing: ' + (Time.now-st).to_s, :warn
 
 
+      total_st = Time.now
+      params['data'].each_slice(1000) do |subset|
+        st = Time.now
+        kafka_message = {:datastream_id => datastreamid, :data => subset}
+        message = WaterDrop::Message.new('RAILS-bulkload', kafka_message.to_json)
+        message.send!
+        logger.ap 'Kafka Message timing: ' + (Time.now-st).to_s
+      end
+      logger.ap 'All Kafka Message timing: ' + (Time.now-total_st).to_s, :warn
+
+
       respond_to do |format|
         msg = {:status => 'ok', :message => 'Successfully loaded datapoints', :count => params['data'].count}
         logger.ap msg, :warn
