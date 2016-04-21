@@ -1,5 +1,5 @@
 panel title do
-  table_for study.participants do
+  table_for study.participants.order(:identifier), sortable: true do
     column 'Identifier' do |i|
       link_to i.identifier, admin_participant_path(i.id)
     end

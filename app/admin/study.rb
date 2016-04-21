@@ -34,42 +34,7 @@ ActiveAdmin.register Study do
       row :updated_at
     end
 
-    panel 'Current Summary' do
-      table_for study.participants do
-        column 'Identifier' do |i|
-          link_to i.identifier, admin_participant_path(i.id)
-        end
-
-        column 'Day Start', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'DAY_START')))
-          if ds.present?
-            Time.at(ds.last['sample'][0]/1000.0).utc.to_datetime
-          end
-        end
-        column 'Day End', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'DAY_END')))
-          if ds.present?
-            Time.at(ds.last['sample'][0]/1000.0).utc.to_datetime
-          end
-        end
-
-        column 'Stress Epsiodes', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION')))
-          ds.count.to_s
-        end
-
-        column 'Total Payment', :id do |i|
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'INCENTIVE')))
-          if ds.present?
-            total_payment = ds.where("sample -> 0 ? 'totalIncentive'")
-            total_payment.last['sample'][0]['totalIncentive'].to_s
-            # totalPayment.to_s
-          end
-        end
-
-      end
-    end
-
+    render 'status_summary', {title: 'Summary', study: study}
 
     datapoint_last_window = Datapoint.last_window((Time.now.utc-1.hours)..(Time.now.utc))
     render 'status_table', {title: '1 Hour Window', study: study, datapoint_last_window: datapoint_last_window}
