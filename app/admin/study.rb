@@ -61,7 +61,7 @@ ActiveAdmin.register Study do
         column 'Total Payment', :id do |i|
           ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'INCENTIVE')))
           if ds.present?
-            totalPayment = ds.where("sample -> 0 ->> 'totalIncentive' = 'OK'").last
+            totalPayment = ds.where("sample -> 0 ? 'totalIncentive'").count
             totalPayment.to_s
           end
         end
