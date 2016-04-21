@@ -34,7 +34,7 @@ ActiveAdmin.register Participant do
 
 
     panel 'Datapoint counts' do
-      table_for Datastream.where(participant_id: participant.id) do
+      table_for Datastream.where(participant_id: participant.id).order(:id) do
         column 'Datastream', :id do |ds|
           link_to ds.id, admin_datastream_path(ds)
         end
