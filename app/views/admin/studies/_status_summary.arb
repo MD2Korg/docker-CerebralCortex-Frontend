@@ -27,7 +27,7 @@ panel title do
       if ds.present?
         total_payment = ds.where("sample -> 0 ? 'totalIncentive'")
         total_payment.last['sample'][0]['totalIncentive'].to_s
-        # totalPayment.to_s
+
       end
     end
 

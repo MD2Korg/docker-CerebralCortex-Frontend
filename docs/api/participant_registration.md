@@ -1,9 +1,15 @@
 ## Participant registration
 JSON API for participant registration
 
-##### Fields
+##### Request fields
 * `identifier`: String identifier
 * `id` (optional): UUID of this form: a37fbcab-0f90-4dd3-907d-f0cb3f247302
+
+##### Response fields
+* `identifier`: String
+* `id`: UUID
+* `created_at`: DateTime
+* `updated_at`: DateTime
 
 
 #### Example 
