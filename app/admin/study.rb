@@ -42,6 +42,9 @@ ActiveAdmin.register Study do
     datapoint_last_window = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day))
     render 'status_table', {title: 'Current Day', study: study, datapoint_last_window: datapoint_last_window}
 
+    datapoint_last_window = Datapoint.last_window((Time.now.beginning_of_day-1.day)..(Time.now.end_of_day-1.day))
+    render 'status_table', {title: 'Previous Day', study: study, datapoint_last_window: datapoint_last_window}
+
     datapoint_last_window = Datapoint
     render 'status_table', {title: 'All Data', study: study, datapoint_last_window: datapoint_last_window}
 
