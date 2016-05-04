@@ -29,7 +29,7 @@ server 'cerebralcortex.md2k.org', user: 'twhnat', roles: %w{app db web}
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
 
-set :application, 'cerebralcortex'
+set :application, 'rice.cerebralcortex'
 
 # Custom SSH Options
 # ==================
