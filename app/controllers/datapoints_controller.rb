@@ -39,11 +39,13 @@ class DatapointsController < InheritedResources::Base
       logger.ap 'Insert timing: ' + (Time.now-st).to_s, :warn
 
 
+      prefix=Rails.configuration.database_configuration[Rails.env]['database']
+
       total_st = Time.now
       params['data'].each_slice(1000) do |subset|
         st = Time.now
         kafka_message = {:datastream_id => datastreamid, :data => subset}
-        message = WaterDrop::Message.new('RAILS-bulkload', kafka_message.to_json)
+        message = WaterDrop::Message.new(prefix+'-RAILS-bulkload', kafka_message.to_json)
         message.send!
         logger.ap 'Kafka Message timing: ' + (Time.now-st).to_s
       end
@@ -72,11 +74,12 @@ class DatapointsController < InheritedResources::Base
 
       if params['data'].present?
 
+        prefix=Rails.configuration.database_configuration[Rails.env]['database']
         total_st = Time.now
         params['data'].each_slice(1000) do |subset|
           st = Time.now
           kafka_message = {:datastream_id => datastreamid, :data => subset}
-          message = WaterDrop::Message.new('RAILS-bulkload', kafka_message.to_json)
+          message = WaterDrop::Message.new(prefix+'-RAILS-bulkload', kafka_message.to_json)
           message.send!
           logger.ap 'Kafka Message timing: ' + (Time.now-st).to_s
         end
