@@ -48,7 +48,7 @@ ActiveAdmin.register Study do
     # datapoint_last_window = Datapoint
     # render 'status_table', {title: 'All Data', study: study, datapoint_last_window: datapoint_last_window}
 
-    render partial: 'study', object: @study
+    # render partial: 'study', object: @study
 
     active_admin_comments
   end
