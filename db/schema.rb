@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160419213216) do
+ActiveRecord::Schema.define(version: 20160614150104) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(version: 20160419213216) do
     t.integer  "offset"
   end
 
+  add_index "datapoints", ["datastream_id", "timestamp"], name: "index_datapoints_on_datastream_id_and_timestamp", using: :btree
   add_index "datapoints", ["datastream_id"], name: "index_datapoints_on_datastream_id", using: :btree
   add_index "datapoints", ["timestamp"], name: "index_datapoints_on_timestamp", using: :btree
 
@@ -74,6 +75,7 @@ ActiveRecord::Schema.define(version: 20160419213216) do
     t.integer  "m_cerebrum_platform_app_id"
   end
 
+  add_index "datasources", ["m_cerebrum_application_id", "m_cerebrum_platform_id", "m_cerebrum_platform_app_id"], name: "datasource_link_index", using: :btree
   add_index "datasources", ["m_cerebrum_application_id"], name: "index_datasources_on_m_cerebrum_application_id", using: :btree
   add_index "datasources", ["m_cerebrum_platform_app_id"], name: "index_datasources_on_m_cerebrum_platform_app_id", using: :btree
   add_index "datasources", ["m_cerebrum_platform_id"], name: "index_datasources_on_m_cerebrum_platform_id", using: :btree
