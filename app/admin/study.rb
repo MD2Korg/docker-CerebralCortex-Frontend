@@ -36,7 +36,7 @@ ActiveAdmin.register Study do
 
     render 'status_summary', {title: 'Summary', study: study}
 
-    datapoint_last_window = Datapoint.last_window((Time.now.utc-1.hours)..(Time.now.utc))
+    datapoint_last_window = Datapoint.includes(:datastream).last_window((Time.now.utc-1.hours)..(Time.now.utc))
     render 'status_table', {title: '1 Hour Window', study: study, datapoint_last_window: datapoint_last_window}
 
     # datapoint_last_window = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day))
