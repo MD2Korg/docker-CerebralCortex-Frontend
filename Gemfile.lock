@@ -201,6 +201,9 @@ GEM
       polyamorous (~> 1.2)
     rdoc (4.2.2)
       json (~> 1.4)
+    redis (3.3.0)
+    redis-namespace (1.5.2)
+      redis (~> 3.0, >= 3.0.4)
     responders (2.1.2)
       railties (>= 4.2.0, < 5.1)
     rspec (3.4.0)
@@ -291,12 +294,13 @@ DEPENDENCIES
   highcharts-rails
   jbuilder (~> 2.0)
   jquery-rails
-  json
   lz4-ruby
   passenger (>= 5.0.25)
   pg (>= 0.15)
   rails (= 4.2.5.1)
   rake
+  redis
+  redis-namespace
   rspec
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
