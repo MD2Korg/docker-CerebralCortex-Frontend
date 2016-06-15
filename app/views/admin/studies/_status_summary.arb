@@ -7,6 +7,9 @@ panel title do
     column 'Data Last Received', :id do |i|
       ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i)).last
       if ds.present?
+        key = i.id + '_' + 'last-updated'
+        $redis.set(key, ds['timestamp'].to_f)
+
         ds['timestamp'].utc
       end
     end

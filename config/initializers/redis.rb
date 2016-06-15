@@ -1,0 +1,1 @@
+$redis = Redis::Namespace.new('cerebralcortex_frontend', :redis => Redis.new(:url => 'redis://192.168.99.100:6379/1'))

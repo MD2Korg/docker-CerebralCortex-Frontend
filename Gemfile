@@ -40,7 +40,10 @@ gem 'degzipper'
 
 gem 'waterdrop'
 
-gem 'json'
+# gem 'json'
+
+gem 'redis'
+gem 'redis-namespace'
 
 # Visualization
 gem 'highcharts-rails'
