@@ -57,6 +57,11 @@ ActiveAdmin.register Participant do
           link_to 'data', admin_datapoints_path(q: {datastream_id_eq: i})
         end
 
+        column 'Export', :id do |i|
+          datas = Datastream.find_by_id(i)
+          link_to 'export', admin_export_path(id: i, name: datas.datasource.datasourcetype, participant: participant.id)
+        end
+
       end
     end
 
