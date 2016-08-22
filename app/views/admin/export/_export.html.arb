@@ -1,0 +1,22 @@
+require 'open3'
+
+@day = DateTime.now.strftime('%Y%m%d')
+@filepath = Dir.tmpdir() + '/'
+@filename = @day + '_' + participant + '_' + name + '.csv'
+@outputfile = @filepath + @filename
+
+@script = 'ls -ahl ' + @filepath + ' ' + @filename + ' ' + id
+
+para 'COMMAND: ' + @script
+
+
+exit_status = Open3.popen3(ENV, @script) { |stdin, stdout, stderr, wait_thr|
+  pid = wait_thr.pid
+  stdin.close
+
+  para stdout.read
+
+  para stderr.read
+
+}
+
