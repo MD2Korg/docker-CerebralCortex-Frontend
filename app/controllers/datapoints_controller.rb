@@ -38,13 +38,13 @@ class DatapointsController < InheritedResources::Base
 
       logger.ap 'Insert timing: ' + (Time.now-st).to_s, :warn
 
-
       prefix=Rails.configuration.database_configuration[Rails.env]['database']
 
       total_st = Time.now
       params['data'].each_slice(1000) do |subset|
         st = Time.now
         kafka_message = {:datastream_id => datastreamid, :data => subset}
+        logger.ap kafka_message
         message = WaterDrop::Message.new(prefix+'-RAILS-bulkload', kafka_message.to_json)
         message.send!
         logger.ap 'Kafka Message timing: ' + (Time.now-st).to_s
@@ -68,17 +68,40 @@ class DatapointsController < InheritedResources::Base
 
 
   def rawbulkload
-    datastreamid = datapoint_params['datastream_id']
+    datastreamid = params['datastream_id']
 
     if datastreamid.present? and Datastream.exists?(id: datastreamid)
 
-      if params['data'].present?
+      if params['rawdatafile'].present?
+
+        @rawdatafile = params['rawdatafile']
+        @rawdata = @rawdatafile.open
+
+        @data = []
+        File.open(@rawdata) do |file|
+          zio = file
+          loop do
+            io = Zlib::GzipReader.new zio
+
+            io.read.split("\n").each do |entry|
+              s = entry.split(',')
+              @data.push ({:dateTime => s[0].to_i, :offset => s[1].to_f, :sample => s[2, s.length].map { |n| n.to_f }})
+            end
+
+            unused = io.unused
+            io.finish
+            break if unused.nil?
+            zio.pos -= unused.length
+          end
+        end
+
 
         prefix=Rails.configuration.database_configuration[Rails.env]['database']
         total_st = Time.now
-        params['data'].each_slice(1000) do |subset|
+        @data.each_slice(1000) do |subset|
           st = Time.now
           kafka_message = {:datastream_id => datastreamid, :data => subset}
+          logger.ap kafka_message
           message = WaterDrop::Message.new(prefix+'-RAILS-bulkload', kafka_message.to_json)
           message.send!
           logger.ap 'Kafka Message timing: ' + (Time.now-st).to_s
@@ -90,9 +113,10 @@ class DatapointsController < InheritedResources::Base
           logger.ap msg, :warn
           format.json { render json: msg }
         end
+
       else
         respond_to do |format|
-          msg = {:status => 'error', :message => 'No data points in array', :count => 0}
+          msg = {:status => 'error', :message => 'No data point file', :count => 0}
           format.json { render json: msg }
         end
       end
