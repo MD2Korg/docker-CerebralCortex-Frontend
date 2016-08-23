@@ -109,7 +109,7 @@ class DatapointsController < InheritedResources::Base
         logger.ap 'All Kafka Message timing: ' + (Time.now-total_st).to_s, :warn
 
         respond_to do |format|
-          msg = {:status => 'ok', :message => 'Successfully sent rawdatapoints', :count => params['data'].count}
+          msg = {:status => 'ok', :message => 'Successfully sent rawdatapoints', :count => @data.count}
           logger.ap msg, :warn
           format.json { render json: msg }
         end
