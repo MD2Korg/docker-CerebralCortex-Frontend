@@ -71,7 +71,7 @@ class DatapointsController < InheritedResources::Base
     datastreamid = params['datastream_id']
 
     if datastreamid.present? and Datastream.exists?(id: datastreamid)
-      logger.ap 'Processing Datastream: ' + datastreamid, :warn
+      logger.ap 'Processing Datastream: ' + datastreamid.to_s, :warn
 
       if params['rawdatafile'].present?
 
