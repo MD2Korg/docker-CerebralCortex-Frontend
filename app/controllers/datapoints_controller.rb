@@ -44,7 +44,7 @@ class DatapointsController < InheritedResources::Base
       params['data'].each_slice(1000) do |subset|
         st = Time.now
         kafka_message = {:datastream_id => datastreamid, :data => subset}
-        logger.ap kafka_message
+        # logger.ap kafka_message
         message = WaterDrop::Message.new(prefix+'-RAILS-bulkload', kafka_message.to_json)
         message.send!
         logger.ap 'Kafka Message timing: ' + (Time.now-st).to_s
@@ -71,6 +71,7 @@ class DatapointsController < InheritedResources::Base
     datastreamid = params['datastream_id']
 
     if datastreamid.present? and Datastream.exists?(id: datastreamid)
+      logger.ap 'Processing Datastream: ' + datastreamid, :warn
 
       if params['rawdatafile'].present?
 
@@ -81,11 +82,16 @@ class DatapointsController < InheritedResources::Base
         File.open(@rawdata) do |file|
           zio = file
           loop do
+
             io = Zlib::GzipReader.new zio
 
-            io.read.split("\n").each do |entry|
-              s = entry.split(',')
-              @data.push ({:dateTime => s[0].to_i, :offset => s[1].to_f, :sample => s[2, s.length].map { |n| n.to_f }})
+            begin
+              io.read.split("\n").each do |entry|
+                s = entry.split(',')
+                @data.push ({:dateTime => s[0].to_i, :offset => s[1].to_f, :sample => s[2, s.length].map { |n| n.to_f }})
+              end
+            rescue
+              # Nothing
             end
 
             unused = io.unused
@@ -101,7 +107,7 @@ class DatapointsController < InheritedResources::Base
         @data.each_slice(1000) do |subset|
           st = Time.now
           kafka_message = {:datastream_id => datastreamid, :data => subset}
-          logger.ap kafka_message
+          # logger.ap kafka_message
           message = WaterDrop::Message.new(prefix+'-RAILS-bulkload', kafka_message.to_json)
           message.send!
           logger.ap 'Kafka Message timing: ' + (Time.now-st).to_s
