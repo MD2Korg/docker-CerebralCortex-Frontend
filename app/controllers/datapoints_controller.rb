@@ -81,6 +81,7 @@ class DatapointsController < InheritedResources::Base
         @data = []
         File.open(@rawdata) do |file|
           zio = file
+          fail_counter = 0
           loop do
 
             begin
@@ -97,6 +98,14 @@ class DatapointsController < InheritedResources::Base
             rescue
               # Nothing
               logger.ap 'Corrupt Data Block', :warn
+              fail_counter += 1
+              if fail_counter > 100
+                respond_to do |format|
+                  msg = {:status => 'error', :message => 'Unrecoverable data file', :count => 0}
+                  format.json { render json: msg }
+                end
+                return
+              end
             end
 
 
