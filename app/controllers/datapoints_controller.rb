@@ -100,6 +100,7 @@ class DatapointsController < InheritedResources::Base
               logger.ap 'Corrupt Data Block', :warn
               fail_counter += 1
               if fail_counter > 100
+                logger.ap 'Aborting data block (datastream: ' + datastreamid.to_s + ')', :warn
                 respond_to do |format|
                   msg = {:status => 'error', :message => 'Unrecoverable data file', :count => 0}
                   format.json { render json: msg }
