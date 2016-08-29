@@ -83,21 +83,23 @@ class DatapointsController < InheritedResources::Base
           zio = file
           loop do
 
-            io = Zlib::GzipReader.new zio
-
             begin
+              io = Zlib::GzipReader.new zio
               io.read.split("\n").each do |entry|
                 s = entry.split(',')
                 @data.push ({:dateTime => s[0].to_i, :offset => s[1].to_f, :sample => s[2, s.length].map { |n| n.to_f }})
               end
+
+              unused = io.unused
+              io.finish
+              break if unused.nil?
+              zio.pos -= unused.length
             rescue
               # Nothing
+              logger.ap 'Corrupt Data Block', :warn
             end
 
-            unused = io.unused
-            io.finish
-            break if unused.nil?
-            zio.pos -= unused.length
+
           end
         end
 
