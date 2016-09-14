@@ -25,7 +25,7 @@ panel title do
                   WHERE e1.datastream_id = id
                   ) e2 ON TRUE
          ) e3
-    WHERE e3.ts > (now() - \'7 day\'::INTERVAL)
+    WHERE e3.ts > (now() - \'1 month\'::INTERVAL)
     GROUP BY e3.participant_id'
       ).collect { |item| [item.participant_id, item.ts] }]
 
