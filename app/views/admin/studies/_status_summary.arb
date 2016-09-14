@@ -25,62 +25,84 @@ panel title do
                   WHERE e1.datastream_id = id
                   ) e2 ON TRUE
          ) e3
+    WHERE e3.ts > (now() - \'7 day\'::INTERVAL)
     GROUP BY e3.participant_id'
       ).collect { |item| [item.participant_id, item.ts] }]
 
-  table_for study.participants.order(:identifier) do
+  # table_for study.participants.order(:identifier) do
+  table_for @query do
     column 'Identifier' do |i|
-      link_to i.identifier, admin_participant_path(i.id)
-    end
-
-    column 'Data Last Received', :id do |i|
-
-      if @query.has_key? i.id
-        key = i.id + '_' + 'last-updated'
-        $redis.set(key, @query[i.id].to_f)
-
-        @query[i.id].utc
+      if i.any?
+        logger.ap i
+        @p=study.participants.find(i.keys[0])
+        logger.ap @p, :warn
+        link_to @p.identifier, admin_participant_path(@p.id)
       end
     end
 
-    column 'Day Start', :id do |i|
-      begin
-        ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'DAY_START')))
-        if ds.present?
-          Time.at(ds.last['sample'][0]/1000.0).utc
+    column 'Data Last Received' do |i|
+      if i.any?
+        @p=study.participants.find(i.keys[0])
+        if @query.has_key? @p.id
+          key = @p.id + '_' + 'last-updated'
+          $redis.set(key, @query[@p.id].to_f)
+
+          @query[@p.id].utc
         end
-      rescue
-        'Data Error'
       end
     end
-    column 'Day End', :id do |i|
-      begin
-        ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'DAY_END')))
-        if ds.present?
-          Time.at(ds.last['sample'][0]/1000.0).utc
+
+    column 'Day Start' do |i|
+      if i.any?
+        @p=study.participants.find(i.keys[0])
+        begin
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'DAY_START')))
+          if ds.present?
+            Time.at(ds.last['sample'][0]/1000.0).utc
+          end
+        rescue
+          'Data Error'
         end
-      rescue
-        'Data Error'
       end
     end
-
-    column 'Stress Episodes', :id do |i|
-      ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION')))
-      ds.count.to_s
-    end
-
-    column 'Total Payment', :id do |i|
-      begin
-        ds = Datapoint.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'INCENTIVE')))
-        if ds.present?
-          total_payment = ds.where("sample -> 0 ? 'totalIncentive'")
-          total_payment.last['sample'][0]['totalIncentive'].to_s
-
+    column 'Day End' do |i|
+      if i.any?
+        @p=study.participants.find(i.keys[0])
+        begin
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'DAY_END')))
+          if ds.present?
+            Time.at(ds.last['sample'][0]/1000.0).utc
+          end
+        rescue
+          'Data Error'
         end
-      rescue
-        'Data Error'
       end
     end
+
+    column 'Stress Episodes' do |i|
+      if i.any?
+        @p=study.participants.find(i.keys[0])
+        ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION')))
+        ds.count.to_s
+      end
+    end
+
+    column 'Total Payment' do |i|
+      if i.any?
+        @p=study.participants.find(i.keys[0])
+        begin
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'INCENTIVE')))
+          if ds.present?
+            total_payment = ds.where("sample -> 0 ? 'totalIncentive'")
+            total_payment.last['sample'][0]['totalIncentive'].to_s
+
+          end
+        rescue
+          'Data Error'
+        end
+      end
+    end
+
 
   end
 end
