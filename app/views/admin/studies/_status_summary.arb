@@ -33,7 +33,7 @@ panel title do
   table_for @query do
     column 'Identifier' do |i|
       if i.any?
-        logger.ap i
+        logger.ap i, :warn
         @p=study.participants.find(i.keys[0])
         logger.ap @p, :warn
         link_to @p.identifier, admin_participant_path(@p.id)
