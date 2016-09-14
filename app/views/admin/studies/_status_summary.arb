@@ -30,19 +30,18 @@ panel title do
       ).collect { |item| [item.participant_id, item.ts] }]
 
   # table_for study.participants.order(:identifier) do
-  table_for @query do
-    column 'Identifier' do |i|
-      if i.any?
-        logger.ap i, :warn
-        @p=study.participants.find(i.keys[0])
+  table_for @query.each do
+    column 'Identifier' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
         logger.ap @p, :warn
         link_to @p.identifier, admin_participant_path(@p.id)
       end
     end
 
-    column 'Data Last Received' do |i|
-      if i.any?
-        @p=study.participants.find(i.keys[0])
+    column 'Data Last Received' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
         if @query.has_key? @p.id
           key = @p.id + '_' + 'last-updated'
           $redis.set(key, @query[@p.id].to_f)
@@ -52,9 +51,9 @@ panel title do
       end
     end
 
-    column 'Day Start' do |i|
-      if i.any?
-        @p=study.participants.find(i.keys[0])
+    column 'Day Start' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
         begin
           ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'DAY_START')))
           if ds.present?
@@ -65,9 +64,9 @@ panel title do
         end
       end
     end
-    column 'Day End' do |i|
-      if i.any?
-        @p=study.participants.find(i.keys[0])
+    column 'Day End' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
         begin
           ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'DAY_END')))
           if ds.present?
@@ -79,17 +78,17 @@ panel title do
       end
     end
 
-    column 'Stress Episodes' do |i|
-      if i.any?
-        @p=study.participants.find(i.keys[0])
+    column 'Stress Episodes' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
         ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION')))
         ds.count.to_s
       end
     end
 
-    column 'Total Payment' do |i|
-      if i.any?
-        @p=study.participants.find(i.keys[0])
+    column 'Total Payment' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
         begin
           ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'INCENTIVE')))
           if ds.present?
