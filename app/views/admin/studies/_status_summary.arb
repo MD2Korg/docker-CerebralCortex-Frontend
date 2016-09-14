@@ -25,8 +25,8 @@ panel title do
                   WHERE e1.datastream_id = id
                   ) e2 ON TRUE
          ) e3
-    WHERE e3.ts > (now() - \'1 month\'::INTERVAL)
-    GROUP BY e3.participant_id'
+    WHERE e3.ts > (now() - \'14 days\'::INTERVAL)
+    GROUP BY e3.participant_id order by max(ts) desc'
       ).collect { |item| [item.participant_id, item.ts] }]
 
   # table_for study.participants.order(:identifier) do
@@ -34,7 +34,6 @@ panel title do
     column 'Identifier' do |participant, timestamp|
       if participant
         @p=study.participants.find(participant)
-        logger.ap @p, :warn
         link_to @p.identifier, admin_participant_path(@p.id)
       end
     end
