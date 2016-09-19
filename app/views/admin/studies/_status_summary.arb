@@ -3,30 +3,39 @@ panel title do
   @query = Hash[
       Datapoint.find_by_sql('
     SELECT
-      max(ts) AS ts,
-      participant_id
-    FROM (
-           SELECT
-             datastream_id,
-             ts,
-             participant_id
-           FROM (
-                  SELECT
-                    datastream_id,
-                    max(timestamp) AS ts
-                  FROM datapoints
-                  GROUP BY datastream_id
-                ) e1
-             JOIN LATERAL (
-                  SELECT
-                    id,
-                    participant_id
-                  FROM datastreams
-                  WHERE e1.datastream_id = id
-                  ) e2 ON TRUE
-         ) e3
-    WHERE e3.ts > (now() - \'14 days\'::INTERVAL)
-    GROUP BY e3.participant_id order by max(ts) desc'
+  e4.ts,
+  e4.participant_id,
+  participant_studies.study_id
+FROM (
+       SELECT
+         max(ts) AS ts,
+         participant_id
+       FROM (
+              SELECT
+                datastream_id,
+                ts,
+                participant_id
+              FROM (
+                     SELECT
+                       datastream_id,
+                       max(timestamp) AS ts
+                     FROM datapoints
+                     GROUP BY datastream_id
+                   ) e1
+                JOIN LATERAL (
+                     SELECT
+                       datastreams.id,
+                       datastreams.participant_id
+                     FROM datastreams
+                     WHERE e1.datastream_id = datastreams.id
+                     ) e2 ON TRUE
+            ) e3
+       WHERE e3.ts > (now() - \'14 days\' :: INTERVAL)
+       GROUP BY e3.participant_id
+       ORDER BY max(ts) DESC
+     ) e4, participant_studies
+WHERE participant_studies.participant_id=e4.participant_id and participant_studies.study_id=' + study.id.to_s + '
+      '
       ).collect { |item| [item.participant_id, item.ts] }]
 
   # table_for study.participants.order(:identifier) do
@@ -34,11 +43,7 @@ panel title do
     column 'Identifier' do |participant, timestamp|
       if participant
         @p=study.participants.find(participant)
-        begin
-          link_to @p.identifier, admin_participant_path(@p.id)
-        rescue
-          @p.identifier
-        end
+        link_to @p.identifier, admin_participant_path(@p.id)
       end
     end
 
