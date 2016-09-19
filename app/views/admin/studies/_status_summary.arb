@@ -34,7 +34,11 @@ panel title do
     column 'Identifier' do |participant, timestamp|
       if participant
         @p=study.participants.find(participant)
-        link_to @p.identifier, admin_participant_path(@p.id)
+        begin
+          link_to @p.identifier, admin_participant_path(@p.id)
+        rescue
+          @p.identifier
+        end
       end
     end
 
