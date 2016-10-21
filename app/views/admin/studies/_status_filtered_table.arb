@@ -1,0 +1,312 @@
+panel title do
+
+  @query = Hash[
+      Datapoint.find_by_sql('
+    SELECT
+  e4.ts,
+  e4.participant_id,
+  participant_studies.study_id
+FROM (
+       SELECT
+         max(ts) AS ts,
+         participant_id
+       FROM (
+              SELECT
+                datastream_id,
+                ts,
+                participant_id
+              FROM (
+                     SELECT
+                       datastream_id,
+                       max(timestamp) AS ts
+                     FROM datapoints
+                     GROUP BY datastream_id
+                   ) e1
+                JOIN LATERAL (
+                     SELECT
+                       datastreams.id,
+                       datastreams.participant_id
+                     FROM datastreams
+                     WHERE e1.datastream_id = datastreams.id
+                     ) e2 ON TRUE
+            ) e3
+       WHERE e3.ts > (now() - \'14 years\' :: INTERVAL)
+       GROUP BY e3.participant_id
+     ) e4, participant_studies
+WHERE participant_studies.participant_id=e4.participant_id and participant_studies.study_id=' + study.id.to_s + '
+ORDER BY ts DESC
+      '
+      ).collect { |item| [item.participant_id, item.ts] }]
+
+  table_for @query.each do
+    column 'Identifier' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
+        link_to @p.identifier, admin_participant_path(@p.id)
+      end
+    end
+
+
+    column 'RIP' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
+        update_needed = false
+
+        key = @p.id + '_' + title + '_' + 'RIP-ratio'
+        updatedkey = @p.id + '_' + 'last-updated'
+        if $redis.exists(key) and $redis.exists(updatedkey)
+          delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+          if delta > 0
+            update_needed = true
+          end
+        end
+        if not update_needed and $redis.exists(key)
+          JSON.parse($redis.get(key))['display']
+        else
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.query('DATA_QUALITY', 'RESPIRATION')))
+          good=ds.where("sample ->> 0 = '0'").count
+          count=ds.count
+
+          display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          if count > 0
+            display
+          else
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+            ''
+          end
+        end
+      end
+    end
+
+
+    column 'ECG' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
+        update_needed = false
+
+        key = @p.id + '_' + title + '_' + 'ECG-ratio'
+        updatedkey = @p.id + '_' + 'last-updated'
+        if $redis.exists(key) and $redis.exists(updatedkey)
+          delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+          if delta > 0
+            update_needed = true
+          end
+        end
+        if not update_needed and $redis.exists(key)
+          JSON.parse($redis.get(key))['display']
+        else
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.query('DATA_QUALITY', 'ECG')))
+          good=ds.where("sample ->> 0 = '0'").count
+          count=ds.count
+          display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          if count > 0
+            display
+          else
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+            ''
+          end
+        end
+      end
+    end
+
+    column 'Wrist (L)' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
+        update_needed = false
+
+        key = @p.id + '_' + title + '_' + 'Wrist-L-ratio'
+        updatedkey = @p.id + '_' + 'last-updated'
+        if $redis.exists(key) and $redis.exists(updatedkey)
+          delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+          if delta > 0
+            update_needed = true
+          end
+        end
+        if not update_needed and $redis.exists(key)
+          JSON.parse($redis.get(key))['display']
+        else
+          ds =datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.query_plat_id('DATA_QUALITY', 'ACCELEROMETER', 'LEFT_WRIST')))
+          good=ds.where("sample ->> 0 = '0'").count
+          count=ds.count
+          display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          if count > 0
+            display
+          else
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+            ''
+          end
+        end
+      end
+    end
+
+    column 'Wrist (R)' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
+        update_needed = false
+
+        key = @p.id + '_' + title + '_' + 'Wrist-R-ratio'
+        updatedkey = @p.id + '_' + 'last-updated'
+        if $redis.exists(key) and $redis.exists(updatedkey)
+          delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+          if delta > 0
+            update_needed = true
+          end
+        end
+        if not update_needed and $redis.exists(key)
+          JSON.parse($redis.get(key))['display']
+        else
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.query_plat_id('DATA_QUALITY', 'ACCELEROMETER', 'RIGHT_WRIST')))
+          good=ds.where("sample ->> 0 = '0'").count
+          count=ds.count
+          display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          if count > 0
+            display
+          else
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+            ''
+          end
+        end
+      end
+    end
+
+    column 'Incentives' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
+        update_needed = false
+
+        key = @p.id + '_' + title + '_' + 'incentive-count'
+        updatedkey = @p.id + '_' + 'last-updated'
+        if $redis.exists(key) and $redis.exists(updatedkey)
+          delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+          if delta > 0
+            update_needed = true
+          end
+        end
+        if not update_needed and $redis.exists(key)
+          JSON.parse($redis.get(key))['display']
+        else
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'INCENTIVE')))
+          count = ds.count
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: count}.to_json)
+          if count > 0
+            count
+          else
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+            ''
+          end
+        end
+      end
+    end
+
+    column 'Privacy' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
+        update_needed = false
+
+        key = @p.id + '_' + title + '_' + 'privacy-count'
+        updatedkey = @p.id + '_' + 'last-updated'
+        if $redis.exists(key) and $redis.exists(updatedkey)
+          delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+          if delta > 0
+            update_needed = true
+          end
+        end
+        if not update_needed and $redis.exists(key)
+          JSON.parse($redis.get(key))['display']
+        else
+          ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'PRIVACY')))
+          count = ds.count
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: count}.to_json)
+          if count > 0
+            count
+          else
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+            ''
+          end
+        end
+      end
+    end
+
+
+    #
+    # column 'EMA', :id do |i|
+    #   update_needed = false
+    #
+    #   key = i.id + '_' + title + '_' + 'EMA-count'
+    #   updatedkey = i.id + '_' + 'last-updated'
+    #   if $redis.exists(key) and $redis.exists(updatedkey)
+    #     delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+    #     if delta > 0
+    #       update_needed = true
+    #     end
+    #   end
+    #   if not update_needed and $redis.exists(key)
+    #     JSON.parse($redis.get(key))['display']
+    #   else
+    #     ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'SURVEY')))
+    #     count = ds.count
+    #     $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: count}.to_json)
+    #     if count > 0
+    #       count
+    #     end
+    #   end
+    # end
+    #
+    # column 'NOTIFICATIONS (O/D/T)', :id do |i|
+    #   update_needed = false
+    #
+    #   key = i.id + '_' + title + '_' + 'notification-counts'
+    #   updatedkey = i.id + '_' + 'last-updated'
+    #   if $redis.exists(key) and $redis.exists(updatedkey)
+    #     delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+    #     if delta > 0
+    #       update_needed = true
+    #     end
+    #   end
+    #   if not update_needed and $redis.exists(key)
+    #     JSON.parse($redis.get(key))['display']
+    #   else
+    #     ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'NOTIFICATION_ACKNOWLEDGE')))
+    #     ok = ds.where("sample -> 0 ->> 'status' = 'OK'").count
+    #     delay = ds.where("sample -> 0 ->> 'status' = 'DELAY'").count
+    #     timeout = ds.where("sample -> 0 ->> 'status' = 'TIMEOUT'").count
+    #     total = ds.count
+    #     display = total.to_s + ' (' + ok.to_s + '/' + delay.to_s + '/' + timeout.to_s + ')'
+    #     $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+    #     if total > 0
+    #       display
+    #     end
+    #   end
+    # end
+    #
+
+    #
+    # column 'Smoking Self Reports', :id do |i|
+    #   update_needed = false
+    #
+    #   key = i.id + '_' + title + '_' + 'smoking-self-report-count'
+    #   updatedkey = i.id + '_' + 'last-updated'
+    #   if $redis.exists(key) and $redis.exists(updatedkey)
+    #     delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+    #     if delta > 0
+    #       update_needed = true
+    #     end
+    #   end
+    #   if not update_needed and $redis.exists(key)
+    #     JSON.parse($redis.get(key))['display']
+    #   else
+    #     ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: i, datasource_id: Datasource.where(datasourcetype: 'EVENT')))
+    #     total = ds.where("sample -> 0 ->> 'event' = 'SMOKING'").where("sample -> 0 ->> 'type' = 'SELF_REPORT'").count
+    #
+    #     $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: total}.to_json)
+    #     if total > 0
+    #       total
+    #     end
+    #   end
+    # end
+  end
+end

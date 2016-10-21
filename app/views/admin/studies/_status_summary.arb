@@ -30,7 +30,7 @@ FROM (
                      WHERE e1.datastream_id = datastreams.id
                      ) e2 ON TRUE
             ) e3
-       WHERE e3.ts > (now() - \'14 days\' :: INTERVAL)
+       WHERE e3.ts > (now() - \'14 years\' :: INTERVAL)
        GROUP BY e3.participant_id
      ) e4, participant_studies
 WHERE participant_studies.participant_id=e4.participant_id and participant_studies.study_id=' + study.id.to_s + '

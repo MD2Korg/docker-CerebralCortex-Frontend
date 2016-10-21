@@ -25,6 +25,9 @@ panel title do
         $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
         if count > 0
           display
+        else
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          ''
         end
       end
     end
@@ -51,6 +54,9 @@ panel title do
         $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
         if count > 0
           display
+        else
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          ''
         end
       end
     end
@@ -76,6 +82,9 @@ panel title do
         $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
         if count > 0
           display
+        else
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          ''
         end
       end
     end
@@ -101,6 +110,9 @@ panel title do
         $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
         if count > 0
           display
+        else
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          ''
         end
       end
     end
@@ -124,6 +136,9 @@ panel title do
         $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: count}.to_json)
         if count > 0
           count
+        else
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          ''
         end
       end
     end
@@ -151,6 +166,9 @@ panel title do
         $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
         if total > 0
           display
+        else
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          ''
         end
       end
     end
@@ -174,6 +192,9 @@ panel title do
         $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: count}.to_json)
         if count > 0
           count
+        else
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          ''
         end
       end
     end
@@ -197,6 +218,9 @@ panel title do
         $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: count}.to_json)
         if count > 0
           count
+        else
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          ''
         end
       end
     end
@@ -221,6 +245,9 @@ panel title do
         $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: total}.to_json)
         if total > 0
           total
+        else
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          ''
         end
       end
     end
