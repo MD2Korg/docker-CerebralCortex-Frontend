@@ -30,7 +30,7 @@ FROM (
                      WHERE e1.datastream_id = datastreams.id
                      ) e2 ON TRUE
             ) e3
-       WHERE e3.ts > (now() - \'14 years\' :: INTERVAL)
+       WHERE e3.ts > (now() - \'' + interval + '\' :: INTERVAL)
        GROUP BY e3.participant_id
      ) e4, participant_studies
 WHERE participant_studies.participant_id=e4.participant_id and participant_studies.study_id=' + study.id.to_s + '
@@ -47,7 +47,7 @@ ORDER BY ts DESC
       end
     end
 
-    column 'Data Last Received' do |participant, timestamp|
+    column 'Last Upload' do |participant, timestamp|
       if participant
         @p=study.participants.find(participant)
         if @query.has_key? @p.id
@@ -86,7 +86,7 @@ ORDER BY ts DESC
       end
     end
 
-    column 'Stress Episodes' do |participant, timestamp|
+    column 'Stress' do |participant, timestamp|
       if participant
         @p=study.participants.find(participant)
         ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION')))
@@ -98,7 +98,50 @@ ORDER BY ts DESC
       end
     end
 
-    column 'Total Payment' do |participant, timestamp|
+    # TODO: Look at adding self-reported smoking events
+
+    column 'Smoking (SR)' do |participant, timestamp|
+      if participant
+        @p=study.participants.find(participant)
+        update_needed = false
+
+        key = @p.id + '_' + title + '_' + 'smoking-self-report-count'
+        updatedkey = @p.id + '_' + 'last-updated'
+        if $redis.exists(key) and $redis.exists(updatedkey)
+          delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+          if delta > 0
+            update_needed = true
+          end
+        end
+        if not update_needed and $redis.exists(key)
+          JSON.parse($redis.get(key))['display']
+        else
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EVENT', identifier: 'SMOKING')))
+          total = ds.count
+
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'PUFFMARKER_SMOKING_EPISODE')))
+
+          if ds.present?
+            total_smoking = ds.where("sample ->> 0 = '1.0'").count.to_s
+          else
+            total_smoking = '0'
+          end
+
+          display = total_smoking.to_s + ' (' + total.to_s + ')'
+
+          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          if total > 0
+            display
+          else
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+            ''
+          end
+        end
+      end
+    end
+
+    # TODO: Check payment values
+    column 'Payment' do |participant, timestamp|
       if participant
         @p=study.participants.find(participant)
         begin

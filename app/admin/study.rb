@@ -34,21 +34,23 @@ ActiveAdmin.register Study do
       row :updated_at
     end
 
-    render 'status_summary', {title: 'Summary', study: study}
+
+    @@history_duration = '1 months'
+
+    render 'status_summary', {title: 'Summary', study: study, interval: @@history_duration}
 
     datapoint_last_window = Datapoint.includes(:datastream).last_window((Time.now.utc-1.hours)..(Time.now.utc))
-    render 'status_filtered_table', {title: '1 Hour Window', study: study, datapoint_last_window: datapoint_last_window}
+    render 'status_filtered_table', {title: '1 Hour Window', study: study, datapoint_last_window: datapoint_last_window, interval: @@history_duration}
 
     datapoint_last_window = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day))
-    render 'status_filtered_table', {title: 'Current Day', study: study, datapoint_last_window: datapoint_last_window}
+    render 'status_filtered_table', {title: 'Current Day', study: study, datapoint_last_window: datapoint_last_window, interval: @@history_duration}
 
     datapoint_last_window = Datapoint.last_window((Time.now.beginning_of_day-1.day)..(Time.now.end_of_day-1.day))
-    render 'status_filtered_table', {title: 'Previous Day', study: study, datapoint_last_window: datapoint_last_window}
+    render 'status_filtered_table', {title: 'Previous Day', study: study, datapoint_last_window: datapoint_last_window, interval: @@history_duration}
 
     datapoint_last_window = Datapoint
-    render 'status_table', {title: 'All Data', study: study, datapoint_last_window: datapoint_last_window}
+    render 'status_filtered_table', {title: 'All Data', study: study, datapoint_last_window: datapoint_last_window, interval: '100 years'}
 
-    # render partial: 'study', object: @study
 
     active_admin_comments
   end
