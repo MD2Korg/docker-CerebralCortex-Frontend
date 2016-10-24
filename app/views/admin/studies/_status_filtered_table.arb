@@ -268,7 +268,7 @@ ORDER BY ts DESC
       end
     end
 
-    column 'Not (O/D/T/T)' do |participant, timestamp|
+    column 'Not (O/C/D/T/T)' do |participant, timestamp|
       if participant
         @p=study.participants.find(participant)
         update_needed = false
@@ -286,10 +286,11 @@ ORDER BY ts DESC
         else
           ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'NOTIFICATION_RESPONSE')))
           ok = ds.where("sample -> 0 ->> 'status' = 'OK'").count
+          cancel = ds.where("sample -> 0 ->> 'status' = 'CANCEL'").count
           delay = ds.where("sample -> 0 ->> 'status' = 'DELAY'").count
           timeout = ds.where("sample -> 0 ->> 'status' = 'TIMEOUT'").count
           total = ds.count
-          display = ok.to_s + '/' + delay.to_s + '/' + timeout.to_s + '/' + total.to_s
+          display = ok.to_s + '/' + cancel.to_s + '/' + delay.to_s + '/' + timeout.to_s + '/' + total.to_s
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
           if total > 0
             display
