@@ -111,10 +111,9 @@ ORDER BY ts DESC
             update_needed = true
           end
         end
-        if true
-        # if not update_needed and $redis.exists(key)
-        #   JSON.parse($redis.get(key))['display']
-        # else
+        if not update_needed and $redis.exists(key)
+          JSON.parse($redis.get(key))['display']
+        else
           ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EVENT', identifier: 'SMOKING')))
           total = ds.count
 
