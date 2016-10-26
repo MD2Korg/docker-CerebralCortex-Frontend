@@ -98,8 +98,6 @@ ORDER BY ts DESC
       end
     end
 
-    # TODO: Look at adding self-reported smoking events
-
     column 'Smoking (SR)' do |participant, timestamp|
       if participant
         @p=study.participants.find(participant)
@@ -130,12 +128,14 @@ ORDER BY ts DESC
           display = total_smoking.to_s + ' (' + total.to_s + ')'
 
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
-          if total > 0 || total_smoking > 0
-            display
-          else
-            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
-            ''
-          end
+
+          display
+          # if total > 0 || total_smoking > 0
+          #   display
+          # else
+          #   $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+          #   ''
+          # end
         end
       end
     end
