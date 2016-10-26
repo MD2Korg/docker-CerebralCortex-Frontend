@@ -37,7 +37,7 @@ class Datasource < ActiveRecord::Base
   end
 
   scope :query, -> (datasource_type, id) { where(datasourcetype: datasource_type, identifier: id) }
-  scope :query_plat_id, -> (datasource_type, id, platform_identifier) { where(datasourcetype: datasource_type, identifier: id, m_cerebrum_platform_id: MCerebrumPlatform.query_identifier(platform_identifier)) }
+  scope :query_plat_id, -> (datasource_type, platform_identifier) { where(datasourcetype: datasource_type, m_cerebrum_platform_id: MCerebrumPlatform.query_identifier(platform_identifier)) }
 
   def self.exists(id, type, dd, meta, mcapp, mcplat, mcplatapp)
     where(identifier: id,
