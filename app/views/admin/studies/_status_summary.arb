@@ -101,42 +101,21 @@ ORDER BY ts DESC
     column 'Smoking (SR)' do |participant, timestamp|
       if participant
         @p=study.participants.find(participant)
-        update_needed = false
 
-        key = @p.id + '_' + title + '_' + 'smoking-self-report-count'
-        updatedkey = @p.id + '_' + 'last-updated'
-        if $redis.exists(key) and $redis.exists(updatedkey)
-          delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
-          if delta > 0
-            update_needed = true
-          end
-        end
-        if not update_needed and $redis.exists(key)
-          JSON.parse($redis.get(key))['display']
+        ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EVENT', identifier: 'SMOKING')))
+        total = ds.count
+
+        ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'PUFFMARKER_SMOKING_EPISODE')))
+
+        if ds.present?
+          total_smoking = ds.where("sample ->> 0 = '1.0'").count
         else
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EVENT', identifier: 'SMOKING')))
-          total = ds.count
-
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'PUFFMARKER_SMOKING_EPISODE')))
-
-          if ds.present?
-            total_smoking = ds.where("sample ->> 0 = '1.0'").count
-          else
-            total_smoking = 0
-          end
-
-          display = total_smoking.to_s + ' (' + total.to_s + ')'
-
-          $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
-
-          display
-          if total > 0 || total_smoking > 0
-            display
-          else
-            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
-            ''
-          end
+          total_smoking = 0
         end
+
+        display = total_smoking.to_s + ' (' + total.to_s + ')'
+
+        display
       end
     end
 
