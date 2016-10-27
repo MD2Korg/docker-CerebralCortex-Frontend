@@ -92,8 +92,10 @@ ORDER BY ts DESC
         ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION')))
 
         if ds.present?
-          total_stress = ds.where("sample ->> 0 = '2.0'")
-          total_stress.count.to_s
+          total_stress = ds.where("sample ->> 0 = '2.0'").count
+          if total_stress > 0
+            total_stress.to_s
+          end
         end
       end
     end
@@ -114,8 +116,9 @@ ORDER BY ts DESC
         end
 
         display = total_smoking.to_s + ' (' + total.to_s + ')'
-
-        display
+        if total_smoking > 0 || total > 0
+          display
+        end
       end
     end
 
