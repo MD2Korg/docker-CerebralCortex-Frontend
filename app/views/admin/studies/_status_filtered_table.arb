@@ -61,7 +61,7 @@ ORDER BY ts DESC
           end
         end
         if not update_needed and $redis.exists(key)
-          JSON.parse($redis.get(key))['display'] + '(c)'
+          JSON.parse($redis.get(key))['display']
         else
           ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.query('DATA_QUALITY', 'RESPIRATION')))
           good=ds.where("sample ->> 0 = '0'").count
