@@ -38,6 +38,9 @@ ORDER BY ts DESC
       '
       ).collect { |item| [item.participant_id, item.ts] }]
 
+
+  @redis_expire_seconds = expire
+
   table_for @query.each do
     column 'Identifier' do |participant, timestamp|
       if participant
@@ -69,6 +72,7 @@ ORDER BY ts DESC
 
           display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          $redis.expire(key, @redis_expire_seconds)
           if count > 0
             display
           else
@@ -101,6 +105,7 @@ ORDER BY ts DESC
           count=ds.count
           display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          $redis.expire(key, @redis_expire_seconds)
           if count > 0
             display
           else
@@ -132,6 +137,7 @@ ORDER BY ts DESC
           count=ds.count
           display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          $redis.expire(key, @redis_expire_seconds)
           if count > 0
             display
           else
@@ -163,6 +169,7 @@ ORDER BY ts DESC
           count=ds.count
           display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          $redis.expire(key, @redis_expire_seconds)
           if count > 0
             display
           else
@@ -192,6 +199,7 @@ ORDER BY ts DESC
           ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'INCENTIVE')))
           count = ds.count
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: count}.to_json)
+          $redis.expire(key, @redis_expire_seconds)
           if count > 0
             count
           else
@@ -221,6 +229,7 @@ ORDER BY ts DESC
           ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'PRIVACY')))
           count = ds.count
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: count}.to_json)
+          $redis.expire(key, @redis_expire_seconds)
           if count > 0
             count
           else
@@ -258,6 +267,7 @@ ORDER BY ts DESC
           display = completed.to_s + '/' + total.to_s
 
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          $redis.expire(key, @redis_expire_seconds)
           if total > 0
             display
           else
@@ -292,6 +302,7 @@ ORDER BY ts DESC
           total = ds.count
           display = ok.to_s + '/' + cancel.to_s + '/' + delay.to_s + '/' + timeout.to_s + '/' + total.to_s
           $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+          $redis.expire(key, @redis_expire_seconds)
           if total > 0
             display
           else
