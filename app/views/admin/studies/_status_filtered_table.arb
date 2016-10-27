@@ -56,7 +56,7 @@ ORDER BY ts DESC
         updatedkey = @p.id + '_' + 'last-updated'
         if $redis.exists(key) and $redis.exists(updatedkey)
           delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
-          if delta > 0
+          if delta != 0
             update_needed = true
           end
         end
