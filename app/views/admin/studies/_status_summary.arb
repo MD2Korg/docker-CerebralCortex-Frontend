@@ -41,100 +41,114 @@ ORDER BY ts DESC
   # table_for study.participants.order(:identifier) do
   table_for @query.each do
     column 'Identifier' do |participant, timestamp|
-      if participant
-        @p=study.participants.find(participant)
-        link_to @p.identifier, admin_participant_path(@p.id)
+      div(title: 'Participant Identifier') do
+        if participant
+          @p=study.participants.find(participant)
+          link_to @p.identifier, admin_participant_path(@p.id)
+        end
       end
     end
 
     column 'Last Upload' do |participant, timestamp|
-      if participant
-        @p=study.participants.find(participant)
-        if @query.has_key? @p.id
-          key = @p.id + '_' + 'last-updated'
-          $redis.set(key, @query[@p.id].to_f)
+      div(title: 'The last time data was received by the system') do
+        if participant
+          @p=study.participants.find(participant)
+          if @query.has_key? @p.id
+            key = @p.id + '_' + 'last-updated'
+            $redis.set(key, @query[@p.id].to_f)
 
-          @query[@p.id].utc
+            @query[@p.id].utc
+          end
         end
       end
     end
 
     column 'Day Start' do |participant, timestamp|
-      if participant
-        @p=study.participants.find(participant)
-        begin
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'DAY_START')))
-          if ds.present?
-            Time.at(ds.order('created_at').last['sample'][0]/1000.0).utc
+      div(title: 'The most recent time a participant started his/her day') do
+        if participant
+          @p=study.participants.find(participant)
+          begin
+            ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'DAY_START')))
+            if ds.present?
+              Time.at(ds.order('created_at').last['sample'][0]/1000.0).utc
+            end
+          rescue
+            'Data Error'
           end
-        rescue
-          'Data Error'
         end
       end
     end
     column 'Day End' do |participant, timestamp|
-      if participant
-        @p=study.participants.find(participant)
-        begin
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'DAY_END')))
-          if ds.present?
-            Time.at(ds.order('created_at').last['sample'][0]/1000.0).utc
+      div(title: 'The most recent time a participant ended his/her day') do
+        if participant
+          @p=study.participants.find(participant)
+          begin
+            ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'DAY_END')))
+            if ds.present?
+              Time.at(ds.order('created_at').last['sample'][0]/1000.0).utc
+            end
+          rescue
+            'Data Error'
           end
-        rescue
-          'Data Error'
         end
       end
     end
 
     column 'Stress' do |participant, timestamp|
-      if participant
-        @p=study.participants.find(participant)
-        ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION')))
+      div(title: 'Total number of stress episodes recorded') do
+        if participant
+          @p=study.participants.find(participant)
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'ORG_MD2K_CSTRESS_STRESS_EPISODE_CLASSIFICATION')))
 
-        if ds.present?
-          total_stress = ds.where("sample ->> 0 = '2.0'").count
-          if total_stress > 0
-            total_stress.to_s
+          if ds.present?
+            total_stress = ds.where("sample ->> 0 = '2.0'").count
+            if total_stress > 0
+              total_stress.to_s
+            end
           end
         end
       end
     end
 
     column 'Smoking (SR)' do |participant, timestamp|
-      if participant
-        @p=study.participants.find(participant)
+      div(title: 'The number of smoking reports: puffMarker (self-reported)') do
+        if participant
+          @p=study.participants.find(participant)
 
-        ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EVENT', identifier: 'SMOKING')))
-        total = ds.count
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EVENT', identifier: 'SMOKING')))
+          total = ds.count
 
-        ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'PUFFMARKER_SMOKING_EPISODE')))
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'PUFFMARKER_SMOKING_EPISODE')))
 
-        if ds.present?
-          total_smoking = ds.where("sample ->> 0 = '1.0'").count
-        else
-          total_smoking = 0
-        end
+          if ds.present?
+            total_smoking = ds.where("sample ->> 0 = '1.0'").count
+          else
+            total_smoking = 0
+          end
 
-        display = total_smoking.to_s + ' (' + total.to_s + ')'
-        if total_smoking > 0 || total > 0
-          display
+          display = total_smoking.to_s + ' (' + total.to_s + ')'
+          if total_smoking > 0 || total > 0
+            display
+          end
         end
       end
     end
 
     # TODO: Check payment values
     column 'Payment' do |participant, timestamp|
-      if participant
-        @p=study.participants.find(participant)
-        begin
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'INCENTIVE')))
-          if ds.present?
-            total_payment = ds.where("sample -> 0 ? 'totalIncentive'")
-            total_payment.last['sample'][0]['totalIncentive'].to_s
+      div(title: 'Total compensation in dollars') do
+        if participant
+          @p=study.participants.find(participant)
+          begin
+            ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'INCENTIVE')))
+            if ds.present?
+              total_payment = ds.where("sample -> 0 ? 'totalIncentive'")
+              total_payment.last['sample'][0]['totalIncentive'].to_s
 
+            end
+          rescue
+            'Data Error'
           end
-        rescue
-          'Data Error'
         end
       end
     end

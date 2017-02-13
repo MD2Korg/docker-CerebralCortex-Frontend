@@ -11,6 +11,14 @@
       <explain-plan-config>
         <provider>com.intellij.database.plan.ExplainPlanProvider.NullExplainPlanProvider</provider>
       </explain-plan-config>
+      <libraries>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/postgresql-driver-license.txt</url>
+        </library>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/postgresql-9.4-1201.jdbc4.jar</url>
+        </library>
+      </libraries>
     </data-source>
     <data-source source="LOCAL" name="Rails docker-CerebralCortex-Frontend: production" uuid="3a9ade85-c551-4a58-b6aa-8ebce82c4b82">
       <driver-ref>postgresql</driver-ref>
@@ -22,6 +30,14 @@
       <explain-plan-config>
         <provider>com.intellij.database.plan.ExplainPlanProvider.NullExplainPlanProvider</provider>
       </explain-plan-config>
+      <libraries>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/postgresql-driver-license.txt</url>
+        </library>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/postgresql-9.4-1201.jdbc4.jar</url>
+        </library>
+      </libraries>
     </data-source>
     <data-source source="LOCAL" name="Rails docker-CerebralCortex-Frontend: test" uuid="4a1d3ba3-eb2b-45b5-a418-3383f5aed23d">
       <driver-ref>postgresql</driver-ref>
@@ -33,6 +49,14 @@
       <explain-plan-config>
         <provider>com.intellij.database.plan.ExplainPlanProvider.NullExplainPlanProvider</provider>
       </explain-plan-config>
+      <libraries>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/postgresql-driver-license.txt</url>
+        </library>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/postgresql-9.4-1201.jdbc4.jar</url>
+        </library>
+      </libraries>
     </data-source>
   </component>
 </project>
