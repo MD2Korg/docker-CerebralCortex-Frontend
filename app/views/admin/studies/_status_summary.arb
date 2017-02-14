@@ -119,12 +119,7 @@ ORDER BY ts DESC
           total = ds.count
 
           ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'SMOKING', identifier: 'PUFF_MARKER')))
-
-          if ds.present?
-            total_smoking = ds.where("sample ->> 0 = '1.0'").count
-          else
-            total_smoking = 0
-          end
+          total_smoking = ds.count
 
           display = total_smoking.to_s + ' (' + total.to_s + ')'
           if total_smoking > 0 || total > 0
