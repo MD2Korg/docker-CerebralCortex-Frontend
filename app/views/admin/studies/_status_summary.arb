@@ -115,10 +115,10 @@ ORDER BY ts DESC
         if participant
           @p=study.participants.find(participant)
 
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EVENT', identifier: 'SMOKING')))
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'SMOKING', identifier: 'SELF_REPORT')))
           total = ds.count
 
-          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'PUFFMARKER_SMOKING_EPISODE')))
+          ds = Datapoint.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'SMOKING', identifier: 'PUFF_MARKER')))
 
           if ds.present?
             total_smoking = ds.where("sample ->> 0 = '1.0'").count
