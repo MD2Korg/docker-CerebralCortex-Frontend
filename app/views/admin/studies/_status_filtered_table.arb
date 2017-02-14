@@ -190,7 +190,7 @@ ORDER BY ts DESC
       end
     end
 
-    column 'Inc' do |participant, timestamp|
+    column 'I' do |participant, timestamp|
       div(title: 'Total number of incentives received') do
         if participant
           @p=study.participants.find(participant)
@@ -222,7 +222,7 @@ ORDER BY ts DESC
       end
     end
 
-    column 'Priv' do |participant, timestamp|
+    column 'P' do |participant, timestamp|
       div(title: 'Total number of privacy events triggered by the participant') do
         if participant
           @p=study.participants.find(participant)
@@ -254,8 +254,44 @@ ORDER BY ts DESC
       end
     end
 
+    column 'Notify' do |participant, timestamp|
+      div(title: 'Notification Events: OK/Cancel/Delay/Timeout/Total') do
+        if participant
+          @p=study.participants.find(participant)
+          update_needed = false
 
-    column 'EMA (C/T)' do |participant, timestamp|
+          key = @p.id + '_' + title + '_' + 'notification-counts'
+          updatedkey = @p.id + '_' + 'last-updated'
+          if $redis.exists(key) and $redis.exists(updatedkey)
+            delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+            if delta != 0
+              update_needed = true
+            end
+          end
+          if not update_needed and $redis.exists(key)
+            JSON.parse($redis.get(key))['display']
+          else
+            ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'NOTIFICATION_RESPONSE')))
+            ok = ds.where("sample -> 0 ->> 'status' = 'OK'").count
+            cancel = ds.where("sample -> 0 ->> 'status' = 'CANCEL'").count
+            delay = ds.where("sample -> 0 ->> 'status' = 'DELAY'").count
+            timeout = ds.where("sample -> 0 ->> 'status' = 'TIMEOUT'").count
+            total = ds.count
+            display = ok.to_s + '/' + cancel.to_s + '/' + delay.to_s + '/' + timeout.to_s + '/' + total.to_s
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+            $redis.expire(key, @redis_expire_seconds)
+            if total > 0
+              display
+            else
+              $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+              ''
+            end
+          end
+        end
+      end
+    end
+
+    column 'EMA' do |participant, timestamp|
       div(title: 'Ecological Momentary Assessments: Completed/Total') do
         if participant
           @p=study.participants.find(participant)
@@ -294,13 +330,14 @@ ORDER BY ts DESC
       end
     end
 
-    column 'Not (O/C/D/T/T)' do |participant, timestamp|
-      div(title: 'Notification Events: OK/Cancel/Delay/Timeout/Total') do
+
+    column 'E-St' do |participant, timestamp|
+      div(title: 'Stress EMA: Completed/Total') do
         if participant
           @p=study.participants.find(participant)
           update_needed = false
 
-          key = @p.id + '_' + title + '_' + 'notification-counts'
+          key = @p.id + '_' + title + '_' + 'EMA-STRESS-count'
           updatedkey = @p.id + '_' + 'last-updated'
           if $redis.exists(key) and $redis.exists(updatedkey)
             delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
@@ -311,13 +348,93 @@ ORDER BY ts DESC
           if not update_needed and $redis.exists(key)
             JSON.parse($redis.get(key))['display']
           else
-            ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'NOTIFICATION_RESPONSE')))
-            ok = ds.where("sample -> 0 ->> 'status' = 'OK'").count
-            cancel = ds.where("sample -> 0 ->> 'status' = 'CANCEL'").count
-            delay = ds.where("sample -> 0 ->> 'status' = 'DELAY'").count
-            timeout = ds.where("sample -> 0 ->> 'status' = 'TIMEOUT'").count
+            ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EMA', identifier: 'STRESS_EMA')))
+
+
+            completed = ds.where("sample -> 0 ->> 'status' = 'COMPLETED'").count
+
             total = ds.count
-            display = ok.to_s + '/' + cancel.to_s + '/' + delay.to_s + '/' + timeout.to_s + '/' + total.to_s
+
+            display = completed.to_s + '/' + total.to_s
+
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+            $redis.expire(key, @redis_expire_seconds)
+            if total > 0
+              display
+            else
+              $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+              ''
+            end
+          end
+        end
+      end
+    end
+
+    column 'E-Sm' do |participant, timestamp|
+      div(title: 'Smoking EMA: Completed/Total') do
+        if participant
+          @p=study.participants.find(participant)
+          update_needed = false
+
+          key = @p.id + '_' + title + '_' + 'EMA-SMOKING-count'
+          updatedkey = @p.id + '_' + 'last-updated'
+          if $redis.exists(key) and $redis.exists(updatedkey)
+            delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+            if delta != 0
+              update_needed = true
+            end
+          end
+          if not update_needed and $redis.exists(key)
+            JSON.parse($redis.get(key))['display']
+          else
+            ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EMA', identifier: 'SMOKING_EMA')))
+
+
+            completed = ds.where("sample -> 0 ->> 'status' = 'COMPLETED'").count
+
+            total = ds.count
+
+            display = completed.to_s + '/' + total.to_s
+
+            $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
+            $redis.expire(key, @redis_expire_seconds)
+            if total > 0
+              display
+            else
+              $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: ''}.to_json)
+              ''
+            end
+          end
+        end
+      end
+    end
+
+    column 'E-R' do |participant, timestamp|
+      div(title: 'Random EMA: Completed/Total') do
+        if participant
+          @p=study.participants.find(participant)
+          update_needed = false
+
+          key = @p.id + '_' + title + '_' + 'EMA-RANDOM-count'
+          updatedkey = @p.id + '_' + 'last-updated'
+          if $redis.exists(key) and $redis.exists(updatedkey)
+            delta = JSON.parse($redis.get(key))['ts'].to_f - $redis.get(updatedkey).to_f
+            if delta != 0
+              update_needed = true
+            end
+          end
+          if not update_needed and $redis.exists(key)
+            JSON.parse($redis.get(key))['display']
+          else
+            ds = datapoint_last_window.where(datastream_id: Datastream.where(participant_id: @p, datasource_id: Datasource.where(datasourcetype: 'EMA', identifier: 'RANDOM_EMA')))
+
+
+            completed = ds.where("sample -> 0 ->> 'status' = 'COMPLETED'").count
+
+            total = ds.count
+
+            display = completed.to_s + '/' + total.to_s
+
             $redis.set(key, {ts: $redis.get(updatedkey).to_f, display: display}.to_json)
             $redis.expire(key, @redis_expire_seconds)
             if total > 0
