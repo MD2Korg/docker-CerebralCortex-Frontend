@@ -37,6 +37,8 @@ ActiveAdmin.register Study do
 
     @@history_duration = '1 months'
 
+    @@jhu_custom = ENV["MD2K_JHU"]
+
     render 'status_summary', {title: 'Summary', study: study, interval: @@history_duration}
 
     datapoint_last_window = Datapoint.includes(:datastream).last_window((Time.now.utc-1.hours)..(Time.now.utc))
@@ -47,6 +49,12 @@ ActiveAdmin.register Study do
 
     datapoint_last_window = Datapoint.last_window((Time.now.beginning_of_day-1.day)..(Time.now.end_of_day-1.day))
     render 'status_filtered_table', {title: 'Previous Day', study: study, datapoint_last_window: datapoint_last_window, interval: @@history_duration, expire: 900}
+
+    if @@jhu_custom
+      datapoint_last_window = Datapoint.last_window((Time.now.beginning_of_day)..(Time.now.end_of_day-3.day))
+      render 'status_filtered_table', {title: 'Past 72 Hours', study: study, datapoint_last_window: datapoint_last_window, interval: @@history_duration, expire: 900}
+    end
+
 
     datapoint_last_window = Datapoint
     render 'status_filtered_table', {title: 'All Data', study: study, datapoint_last_window: datapoint_last_window, interval: '100 years', expire: 300000000}
