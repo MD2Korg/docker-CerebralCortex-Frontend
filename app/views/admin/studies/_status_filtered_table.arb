@@ -74,7 +74,7 @@ ORDER BY ts DESC
             count=ds.count
 
             if @@jhu_hour
-              display=(24.0*good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+              display=(1.0*good.to_f/(1200)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             else
               display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             end
@@ -114,7 +114,7 @@ ORDER BY ts DESC
             count=ds.count
 
             if @@jhu_hour
-              display=(24.0*good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+              display=(1.0*good.to_f/(1200)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             else
               display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             end
@@ -154,7 +154,7 @@ ORDER BY ts DESC
             count=ds.count
 
             if @@jhu_hour
-              display=(24.0*good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+              display=(1.0*good.to_f/(1200)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             else
               display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             end
@@ -194,7 +194,7 @@ ORDER BY ts DESC
             count=ds.count
 
             if @@jhu_hour
-              display=(24.0*good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+              display=(1.0*good.to_f/(1200)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             else
               display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             end
