@@ -41,8 +41,6 @@ ORDER BY ts DESC
 
   @@jhu_hour = ENV["MD2K_JHU_HOUR"]
 
-  @redis_expire_seconds = expire
-
   table_for @query.each do
     column 'Identifier' do |participant, timestamp|
       div(title: 'Participant identifier') do
@@ -76,7 +74,7 @@ ORDER BY ts DESC
             count=ds.count
 
             if @@jhu_hour
-              display=(good.to_f/(count)).round(3)*24.to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+              display=(24.0*good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             else
               display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             end
@@ -116,7 +114,7 @@ ORDER BY ts DESC
             count=ds.count
 
             if @@jhu_hour
-              display=(good.to_f/(count)).round(3)*24.to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+              display=(24.0*good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             else
               display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             end
@@ -156,7 +154,7 @@ ORDER BY ts DESC
             count=ds.count
 
             if @@jhu_hour
-              display=(good.to_f/(count)).round(3)*24.to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+              display=(24.0*good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             else
               display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             end
@@ -196,7 +194,7 @@ ORDER BY ts DESC
             count=ds.count
 
             if @@jhu_hour
-              display=(good.to_f/(count)).round(3)*24.to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
+              display=(24.0*good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             else
               display=(good.to_f/(count)).round(3).to_s + ' (' + good.to_s + '/' + (count).to_s + ')'
             end
