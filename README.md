@@ -1,63 +1,45 @@
-== README
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/6413a59d11734abfbbe3075d0e4eb814)](https://www.codacy.com/app/twhnat/docker-CerebralCortex-Frontend)
+# docker-CerebralCortex-Frontend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Cerebral Cortex is the big data cloud companion of mCerebrum designed to support population-scale data analysis, visualization, model development, and intervention design for mobile sensor data.
 
-Things you may want to cover:
+Docker Frontend for Cerebral Cortex
 
-* Ruby version
+You can find more information about MD2K software on our [software website](https://md2k.org/software) or the MD2K organization on our [MD2K website](https://md2k.org/).
 
-* System dependencies
+## Contributing
+Please read our [Contributing Guidelines](https://md2k.org/contributing/contributing-guidelines.html) for details on the process for submitting pull requests to us.
 
-* Configuration
+Our [Code of Conduct](https://md2k.org/contributing/code-of-conduct.html) is the [Contributor Covenant](https://www.contributor-covenant.org/).
 
-* Database creation
-Postgres:
+Bug reports can be submitted through [JIRA](https://md2korg.atlassian.net/secure/Dashboard.jspa).
 
-```create database cc_vermont_production with owner=cerebralcortex encoding='UTF-8' lc_collate='en_US.utf8' lc_ctype='en_US.utf8' template template0;```
+Our discussion forum can be found [here](https://discuss.md2k.org/).
 
+## Versioning
 
-Cassandra Init:
+We use [Semantic Versioning](https://semver.org/) for versioning the software which is based on the following guidelines.
 
-```
-CREATE KEYSPACE cc_SITE_production WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'}  AND durable_writes = true;
+MAJOR.MINOR.PATCH (example: 3.0.12)
 
-CREATE TABLE cc_SITE_production.rawdata (
-    datastream_id varint,
-    day text,
-    datetime timestamp,
-    offset int,
-    sample text,
-    PRIMARY KEY ((datastream_id, day), datetime)
-) WITH CLUSTERING ORDER BY (datetime ASC)
-    AND bloom_filter_fp_chance = 0.01
-    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
-    AND comment = ''
-    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
-    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
-    AND crc_check_chance = 1.0
-    AND dclocal_read_repair_chance = 0.1
-    AND default_time_to_live = 0
-    AND gc_grace_seconds = 864000
-    AND max_index_interval = 2048
-    AND memtable_flush_period_in_ms = 0
-    AND min_index_interval = 128
-    AND read_repair_chance = 0.0
-    AND speculative_retry = '99PERCENTILE';
- ```
+  1. MAJOR version when incompatible API changes are made,
+  2. MINOR version when functionality is added in a backwards-compatible manner, and
+  3. PATCH version when backwards-compatible bug fixes are introduced.
 
+For the versions available, see [this repository's tags](https://github.com/MD2Korg/docker-CerebralCortex-Frontend/tags).
 
-* Database initialization
+## Contributors
 
-* How to run the test suite
+Link to the [list of contributors](https://github.com/MD2Korg/docker-CerebralCortex-Frontend/graphs/contributors) who participated in this project.
 
-* Services (job queues, cache servers, search engines, etc.)
+## License
 
-* Deployment instructions
+This project is licensed under the BSD 2-Clause - see the [license](https://md2k.org/software-under-the-hood/software-uth-license) file for details.
 
-* ...
+## Acknowledgments
 
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+* [National Institutes of Health](https://www.nih.gov/) - [Big Data to Knowledge Initiative](https://datascience.nih.gov/bd2k)
+  * Grants: R01MD010362, 1UG1DA04030901, 1U54EB020404, 1R01CA190329, 1R01DE02524, R00MD010468, 3UH2DA041713, 10555SC
+* [National Science Foundation](https://www.nsf.gov/)
+  * Grants: 1640813, 1722646
+* [Intelligence Advanced Research Projects Activity](https://www.iarpa.gov/)
+  * Contract: 2017-17042800006
